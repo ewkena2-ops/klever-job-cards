@@ -445,10 +445,10 @@ h2{
     </div>
 
     <div class="group">
-      <h2>Sheet</h2>
+      <h2>Cards per A4 sheet</h2>
       <div class="seg" id="sizeSeg">
-        <button type="button" data-size="a4" aria-pressed="false">A4<small>one card</small></button>
-        <button type="button" data-size="a6" aria-pressed="true">A6<small>four to a sheet</small></button>
+        <button type="button" data-size="a4" aria-pressed="false">1 card<small>on A4 paper</small></button>
+        <button type="button" data-size="a6" aria-pressed="true">4 cards<small>on A4 paper</small></button>
       </div>
     </div>
 
@@ -457,13 +457,14 @@ h2{
     <p class="note" id="status">
       Colour runs down the <b>left edge for the salesperson</b> and the
       <b>right edge for the designer</b>, so a card says whose job it is
-      without being read. Print at <b>100% / actual size</b>; on A6, cut once
-      across and once down.
+      without being read. Every sheet is <b>A4 paper</b> — the four-card
+      setting fits four A6 cards on one A4. Print at <b>100% / actual size</b>,
+      then cut once across and once down.
     </p>
   </aside>
 
   <main class="stage">
-    <div class="cap" id="cap">Form JC-01S · A6 · four to the sheet</div>
+    <div class="cap" id="cap">A4 paper · four A6 cards · cut on the dashes</div>
     <div class="hold" id="hold">
       <div class="sheet" id="sheet"></div>
     </div>
@@ -749,9 +750,10 @@ function renderRail(){
 function renderSheet(){
   const sheet = $("#sheet");
   sheet.innerHTML = size === "a4" ? cardA4() : sheetA6();
+  /* the paper is A4 either way — only the number of cards on it changes */
   $("#cap").textContent = size === "a4"
-    ? "Form JC-01 · A4 · one card"
-    : "Form JC-01S · A6 · four to the sheet, cut on the dashes";
+    ? "A4 paper · one full card · Form JC-01"
+    : "A4 paper · four A6 cards · cut on the dashes · Form JC-01S";
   fit();
 }
 
