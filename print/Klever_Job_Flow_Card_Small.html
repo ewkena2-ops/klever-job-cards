@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Klever Job Flow Card &mdash; Small (A6, 4-up)</title>
+<style>
+  /* ════════════════════════════════════════════════════════════════
+     FORM JF-01S  —  the A6 pocket form of the A4 Job Flow Card (JF-01).
+     One A4 sheet holds four identical cards; cut on the grey cross.
+     Stages and owners are quoted verbatim from JC-01 REV 2 — the
+     stage data lives in the STAGES array at the foot of this file.
+     ════════════════════════════════════════════════════════════════ */
+
+  @page { size: A4 portrait; margin: 0; }
+
+  :root{
+    --ink:      #2b2b2b;
+    --charcoal: #4f4f4f;
+    --label:    #8c8c8c;
+    --rule:     #b9b9b9;
+    --hair:     #d7d7d7;
+    --grey:     #7a7368;
+    --c1: #4a86c8;   /* commercial             */
+    --c2: #4a9d5b;   /* finance & procurement  */
+    --c3: #e0714a;   /* production             */
+    --c4: #e0475f;   /* delivery & after-sales */
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html,body{
+    font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
+    color:var(--ink);
+    background:#fff;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  /* ───────────────────────── 4-UP A4 SHEET ───────────────────────── */
+  /* A4 is 210 x 297mm; Chrome rounds its print box a hair under, so the
+     sheet is laid out just inside it — a flush 210mm spills a blank page. */
+  .sheet{
+    position:relative;
+    width:209.4mm; height:296.4mm;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:1fr 1fr;
+  }
+  .tile{ padding:5mm; overflow:hidden; }
+  .cut{ position:absolute; }
+  .cut.v{ left:50%; top:0; height:100%; border-left:.4pt dashed #c9c9c9; }
+  .cut.h{ top:50%; left:0; width:100%; border-top:.4pt dashed #c9c9c9; }
+
+  /* ─────────────────────────── THE CARD ─────────────────────────── */
+  /* fills its tile: about 94.7 x 138.2mm of ink, 5mm quiet zone all round */
+  .card{ width:100%; height:100%; display:flex; flex-direction:column; }
+
+  .head{
+    background:var(--charcoal); color:#fff;
+    padding:2.2mm 3.2mm 2mm;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{ font-size:4.6pt; letter-spacing:.34em; font-weight:600; opacity:.85; }
+  .title{ font-size:12.5pt; font-weight:800; letter-spacing:.02em; line-height:1.05; margin:.6mm 0; }
+  .tagline{ font-size:4.2pt; letter-spacing:.14em; font-weight:600; opacity:.9; white-space:nowrap; }
+
+  .count{ background:#fff; border-radius:1mm; padding:1.2mm 2.6mm 1.4mm; text-align:center; }
+  .count .k{ font-size:4.2pt; letter-spacing:.14em; font-weight:700; color:var(--label); }
+  .count .v{ font-size:11pt; font-weight:800; color:var(--charcoal); line-height:1.15; }
+
+  .stripe{ display:flex; height:1.5mm; flex:none; }
+  .stripe i{ display:block; height:100%; }
+
+  .lede{
+    font-size:4.4pt; line-height:1.35; color:var(--charcoal);
+    padding:1.2mm 0 .4mm;
+  }
+  .lede b{ color:var(--ink); }
+
+  /* zones */
+  .z{
+    display:flex; align-items:center; justify-content:space-between;
+    color:#fff; padding:.6mm 2mm;
+    font-size:4.4pt; letter-spacing:.16em; font-weight:800;
+    margin-top:.6mm;
+  }
+  .z .c{ font-size:4.1pt; letter-spacing:.12em; font-weight:700; opacity:.88; }
+
+  .s{
+    display:flex; align-items:center;
+    height:4.7mm; padding:0 2mm;
+    border-bottom:.35pt solid var(--hair);
+  }
+  .s.alt{ background:#fafafa; }
+  .s b{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:3.4mm; height:3.4mm; border-radius:.5mm;
+    color:#fff; font-size:4.4pt; font-weight:700;
+    flex:none; margin-right:2.2mm;
+  }
+  .s .n{ flex:1; font-size:6pt; font-weight:800; letter-spacing:.01em; }
+  .s em{
+    font-style:normal; font-size:3.9pt; letter-spacing:.14em; font-weight:700;
+    color:var(--label); margin-right:1.6mm;
+  }
+  .s .w{ width:18mm; font-size:5.6pt; font-weight:700; }
+
+  .s.hold{ border-bottom:0; background:#fff; }
+  .s.hold .n{ color:var(--grey); }
+
+  /* hard stops */
+  .stops{
+    margin-top:1.6mm;
+    background:var(--charcoal);
+    border-left:1.4mm solid var(--c4);
+    color:#fff; padding:1.4mm 2.2mm 1.5mm;
+  }
+  .stops h4{ font-size:4.4pt; letter-spacing:.16em; font-weight:800; margin-bottom:1mm; }
+  .stops li{
+    list-style:none;
+    font-size:4.3pt; line-height:1.4; font-weight:500;
+    padding-left:2.2mm; position:relative;
+  }
+  .stops li::before{
+    content:""; position:absolute; left:0; top:.9mm;
+    width:.9mm; height:.9mm; background:var(--c4);
+  }
+
+  .foot{
+    display:flex; justify-content:space-between; gap:2mm;
+    margin-top:auto; padding-top:1.4mm;
+    font-size:3.9pt; letter-spacing:.12em; font-weight:600; color:var(--label);
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet" id="sheet">
+  <div class="cut v"></div>
+  <div class="cut h"></div>
+</div>
+
+<template id="card">
+  <div class="card">
+
+    <div class="head">
+      <div>
+        <div class="brand">KLEVER</div>
+        <div class="title">JOB FLOW</div>
+        <div class="tagline">WHO SIGNS, AND IN WHAT ORDER</div>
+      </div>
+      <div class="count">
+        <div class="k">STAGES</div>
+        <div class="v">16</div>
+      </div>
+    </div>
+
+    <div class="stripe">
+      <i style="width:31.25%;background:var(--c1)"></i>
+      <i style="width:25%;background:var(--c2)"></i>
+      <i style="width:18.75%;background:var(--c3)"></i>
+      <i style="width:25%;background:var(--c4)"></i>
+    </div>
+
+    <p class="lede">Pocket reading copy. The signing copy is <b>Form JC-01, the Job Card</b> &mdash; one per job,
+    same sixteen stages, with a date and a signature against each.</p>
+
+    <div class="track"></div>
+
+    <div class="stops">
+      <h4>HARD STOPS &mdash; NON-NEGOTIABLE</h4>
+      <ul>
+        <li>No production without 100% final payment confirmed by Betty.</li>
+        <li>No delivery without QC release signed by Wede.</li>
+        <li>No assembler payment without the signed Customer Acceptance Form.</li>
+      </ul>
+    </div>
+
+    <div class="foot">
+      <span>FORM JF-01S &nbsp;&middot;&nbsp; REV 2 &nbsp;&middot;&nbsp; 19 SEP 2026</span>
+      <span>MIRRORS JC-01 REV 2</span>
+    </div>
+
+  </div>
+</template>
+
+<script>
+/* Stages and owners — must match Form JC-01 REV 2 verbatim. */
+var STAGES = [
+  ["COMMERCIAL", "STAGES 1–5", "c1", [
+    [1,  "LEAD",                    "Salesperson"],
+    [2,  "ADVANCE PAID",            "Betty"],
+    [3,  "FINAL MEASUREMENT",       "Designer"],
+    [4,  "MATERIAL SELECTION",      "Designer"],
+    [5,  "PURCHASE APPROVAL",       "Ephrata"]]],
+  ["FINANCE &amp; PROCUREMENT", "STAGES 6–9", "c2", [
+    [6,  "MATERIALS ORDERED",       "Getachew"],
+    [7,  "MATERIALS RECEIVED",      "Yordanos"],
+    [8,  "FINAL PAYMENT REQUESTED", "Betty"],
+    [9,  "FINAL PAYMENT RECEIVED",  "Betty"]]],
+  ["PRODUCTION", "STAGES 10–12", "c3", [
+    [10, "PRODUCTION APPROVED",     "Liu"],
+    [11, "PRODUCTION COMPLETED",    "Amha"],
+    [12, "QC RELEASED",             "Wede"]]],
+  ["DELIVERY &amp; AFTER-SALES", "STAGES 13–16", "c4", [
+    [13, "READY FOR DELIVERY",      "Betty"],
+    [14, "DELIVERED / INSTALLED",   "Elias"],
+    [15, "CUSTOMER ACCEPTANCE",     "Elias"],
+    [16, "AFTER-SALES FOLLOW-UP",   "Salesperson"]]]
+];
+
+function trackHTML(){
+  var out = "", row = 0;
+  STAGES.forEach(function(band){
+    var col = "var(--" + band[2] + ")";
+    out += '<div class="z" style="background:' + col + '">' +
+             '<span>' + band[0] + '</span><span class="c">' + band[1] + '</span></div>';
+    band[3].forEach(function(s){
+      out += '<div class="s' + (row++ % 2 ? " alt" : "") + '">' +
+               '<b style="background:' + col + '">' + s[0] + '</b>' +
+               '<span class="n">' + s[1] + '</span>' +
+               '<em>MOVED BY</em>' +
+               '<span class="w" style="color:' + col + '">' + s[2] + '</span></div>';
+    });
+  });
+  /* Hold is a flag Ephrata alone may set — not a stage, so it carries no number. */
+  out += '<div class="z" style="background:var(--grey)"><span>HOLD</span>' +
+           '<span class="c">NOT A STAGE &mdash; THE JOB KEEPS ITS NUMBER</span></div>' +
+         '<div class="s hold"><b style="background:var(--grey)">&mdash;</b>' +
+           '<span class="n">HOLD / BLOCKED</span><em>SET BY</em>' +
+           '<span class="w" style="color:var(--grey)">Ephrata only</span></div>';
+  return out;
+}
+
+(function(){
+  var tpl = document.getElementById("card");
+  var sheet = document.getElementById("sheet");
+  var track = trackHTML();
+  for (var i = 0; i < 4; i++){
+    var tile = document.createElement("div");
+    tile.className = "tile";
+    tile.appendChild(tpl.content.cloneNode(true));
+    tile.querySelector(".track").innerHTML = track;
+    sheet.appendChild(tile);
+  }
+})();
+</script>
+
+</body>
+</html>

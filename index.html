@@ -1,0 +1,881 @@
+<title>Klever Job Card Press</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   KLEVER JOB CARD PRESS
+   The card geometry below is the printed forms JC-01 (A4) and JC-01S (A6,
+   four to a sheet), millimetre for millimetre. Screen chrome is separate:
+   the sheet is always white paper, in either theme, because it is a print
+   preview and paper does not have a dark mode.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root{
+  --ground:#f2f0ec;
+  --panel:#ffffff;
+  --sunk:#faf9f7;
+  --line:#dedad3;
+  --line-soft:#ebe8e2;
+  --ink:#2b2b2b;
+  --muted:#7b756c;
+  --charcoal:#4f4f4f;
+  --focus:#4a86c8;
+  --shadow:0 1px 2px rgba(43,40,35,.06), 0 8px 28px rgba(43,40,35,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#1a1917;
+    --panel:#242220;
+    --sunk:#1f1e1c;
+    --line:#38352f;
+    --line-soft:#2e2c28;
+    --ink:#ece8e2;
+    --muted:#9a938a;
+    --charcoal:#c8c2b8;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#1a1917;
+  --panel:#242220;
+  --sunk:#1f1e1c;
+  --line:#38352f;
+  --line-soft:#2e2c28;
+  --ink:#ece8e2;
+  --muted:#9a938a;
+  --charcoal:#c8c2b8;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.45);
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font:15px/1.5 "IBM Plex Sans", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+}
+
+.app{
+  display:grid;
+  grid-template-columns:330px minmax(0,1fr);
+  min-height:100vh;
+}
+@media (max-width:900px){
+  .app{ grid-template-columns:1fr; }
+}
+
+/* ───────────────────────────── control rail ───────────────────────────── */
+.rail{
+  background:var(--panel);
+  border-right:1px solid var(--line);
+  display:flex; flex-direction:column; gap:22px;
+  padding:22px 20px 32px;
+  align-self:start;
+  position:sticky; top:0; max-height:100vh; overflow-y:auto;
+}
+@media (max-width:900px){
+  .rail{ position:static; max-height:none; border-right:0; border-bottom:1px solid var(--line); }
+}
+
+.brand{ display:flex; align-items:baseline; gap:8px; }
+.brand b{ font-size:12px; font-weight:700; letter-spacing:.34em; }
+.brand span{ font-size:11px; color:var(--muted); letter-spacing:.12em; }
+
+h2{
+  margin:0 0 10px;
+  font-size:10.5px; font-weight:700; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--muted);
+}
+
+.group{ display:flex; flex-direction:column; }
+
+/* a person is a row: colour, name, and (for designers) a way to remove them */
+.people{ display:flex; flex-direction:column; gap:2px; }
+.person{
+  display:flex; align-items:center; gap:10px;
+  width:100%; text-align:left;
+  padding:8px 9px; border-radius:7px;
+  border:1px solid transparent; background:none;
+  color:inherit; font:inherit; cursor:pointer;
+}
+.person:hover{ background:var(--sunk); }
+.person:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+.person[aria-pressed="true"]{ border-color:var(--line); background:var(--sunk); }
+.person .sw{
+  width:14px; height:14px; border-radius:3px; flex:none;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);
+}
+.person .nm{ flex:1; font-size:13.5px; }
+.person[aria-pressed="true"] .nm{ font-weight:600; }
+.person .tag{
+  font:500 10px/1 "IBM Plex Mono", ui-monospace, monospace;
+  color:var(--muted); letter-spacing:.06em;
+}
+.person .drop{
+  border:0; background:none; color:var(--muted);
+  font:500 15px/1 "IBM Plex Mono", ui-monospace, monospace;
+  cursor:pointer; padding:2px 4px; border-radius:4px;
+}
+.person .drop:hover{ color:#e0475f; background:rgba(224,71,95,.1); }
+
+/* add a designer */
+.add{ display:flex; gap:6px; margin-top:8px; }
+.add input[type="text"]{
+  flex:1; min-width:0;
+  padding:7px 9px; border-radius:6px;
+  border:1px solid var(--line); background:var(--sunk); color:var(--ink);
+  font:inherit; font-size:13px;
+}
+.add input[type="text"]:focus-visible{ outline:2px solid var(--focus); outline-offset:-1px; border-color:var(--focus); }
+.add input[type="color"]{
+  width:34px; height:34px; padding:2px; flex:none;
+  border:1px solid var(--line); border-radius:6px; background:var(--sunk); cursor:pointer;
+}
+.add button{
+  flex:none; padding:0 12px; border-radius:6px;
+  border:1px solid var(--line); background:var(--sunk); color:var(--ink);
+  font:600 13px/1 "IBM Plex Sans", sans-serif; cursor:pointer;
+}
+.add button:hover{ border-color:var(--charcoal); }
+.add button:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+
+.seg{ display:flex; gap:0; border:1px solid var(--line); border-radius:7px; overflow:hidden; }
+.seg button{
+  flex:1; padding:9px 8px; border:0; background:var(--panel); color:var(--muted);
+  font:600 12px/1.35 "IBM Plex Sans", sans-serif; cursor:pointer;
+}
+.seg button + button{ border-left:1px solid var(--line); }
+.seg button[aria-pressed="true"]{ background:var(--charcoal); color:var(--panel); }
+.seg button:focus-visible{ outline:2px solid var(--focus); outline-offset:-2px; }
+.seg small{ display:block; font-weight:400; font-size:10.5px; opacity:.75; margin-top:2px; }
+
+.print{
+  width:100%; padding:13px; border-radius:8px; border:0;
+  background:var(--ink); color:var(--ground);
+  font:700 13px/1 "IBM Plex Sans", sans-serif; letter-spacing:.1em;
+  text-transform:uppercase; cursor:pointer;
+}
+.print:hover{ opacity:.9; }
+.print:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+.note{ font-size:11.5px; line-height:1.55; color:var(--muted); }
+.note code{ font:500 11px/1 "IBM Plex Mono", ui-monospace, monospace; }
+.note b{ color:var(--ink); font-weight:600; }
+
+/* ───────────────────────────── paper stage ───────────────────────────── */
+.stage{
+  padding:34px 34px 60px;
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+  min-width:0;
+}
+.stage .cap{
+  font:500 11px/1 "IBM Plex Mono", ui-monospace, monospace;
+  color:var(--muted); letter-spacing:.1em; text-transform:uppercase;
+}
+.hold{ width:100%; display:flex; justify-content:center; }
+.sheet{
+  width:209.4mm; height:296.4mm; flex:none;
+  background:#fff; color:#2b2b2b;
+  transform:scale(var(--zoom,1)); transform-origin:top center;
+  box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+/* ══════════════ the printed card — JC-01 / JC-01S geometry ══════════════ */
+.sheet{
+  --k-ink:#2b2b2b;
+  --k-char:#4f4f4f;
+  --k-label:#8c8c8c;
+  --k-rule:#b9b9b9;
+  --k-hair:#d7d7d7;
+  --c1:#4a86c8;   /* commercial            */
+  --c2:#4a9d5b;   /* finance & procurement */
+  --c3:#e0714a;   /* production            */
+  --c4:#e0475f;   /* delivery & after-sales*/
+}
+.sheet *{ box-sizing:border-box; margin:0; padding:0; }
+
+/* A4: the sheet's own 10/9mm margin, so the card body is 192mm as printed */
+.a4pad{ padding:10mm 9mm; height:100%; }
+.card4{ width:192mm; }
+
+.k-head{
+  background:var(--k-char); color:#fff;
+  padding:4.5mm 7mm 4mm;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.k-brand{ font-size:8pt; letter-spacing:.42em; font-weight:600; opacity:.85; }
+.k-title{ font-size:23pt; font-weight:800; letter-spacing:.02em; line-height:1.05; margin:1mm 0; }
+.k-tag{ font-size:7pt; letter-spacing:.26em; font-weight:600; opacity:.9; }
+.k-who{ font-weight:800; letter-spacing:.3em; margin-right:2.2mm; }
+.sales .k-head{ border-left:8mm solid var(--sales); }
+.desg  .k-head{ border-right:8mm solid var(--desg); }
+
+.k-codes{ display:flex; gap:4mm; }
+.k-code{ background:#fff; border-radius:1.5mm; padding:2.2mm 3.2mm 2.8mm; width:36mm; }
+.k-code .k{ font-size:6.2pt; letter-spacing:.2em; font-weight:700; color:var(--k-label); }
+.k-code .v{
+  margin-top:2.2mm; font-size:12pt; font-weight:800; color:var(--k-char);
+  border-bottom:.5pt solid var(--k-rule); padding-bottom:.6mm;
+}
+
+.k-stripe{ display:flex; height:2.4mm; flex:none; }
+.k-stripe i{ display:block; height:100%; }
+
+.k-sec{ display:flex; align-items:center; gap:2.6mm; margin:3mm 0 2.2mm; }
+.k-sec b{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:4.6mm; height:4.6mm; border-radius:.8mm;
+  background:var(--k-char); color:#fff; font-size:7.5pt; font-weight:700;
+}
+.k-sec span{ font-size:10.5pt; font-weight:800; letter-spacing:.16em; }
+.k-sec em{ font-size:6.8pt; font-style:normal; letter-spacing:.06em; color:var(--k-label); font-weight:500; }
+
+.k-row{ display:flex; gap:6mm; margin-bottom:3mm; }
+.k-f{ flex:1; }
+.k-f.w2{ flex:2; }
+.k-f label{
+  display:block; font-size:6.2pt; letter-spacing:.19em; font-weight:700;
+  color:var(--k-label); text-transform:uppercase;
+}
+.k-f .line{ height:4.8mm; border-bottom:.6pt solid var(--k-rule); }
+.k-f .line.filled{ font-size:9pt; font-weight:800; color:var(--sales); line-height:4.8mm; }
+
+.k-ticks{ display:flex; flex-wrap:wrap; margin-top:1mm; }
+.k-tick{ width:25%; display:flex; align-items:center; gap:2mm; padding:.9mm 0; }
+.k-tick i{ display:block; width:3.4mm; height:3.4mm; border:.7pt solid #9d9d9d; border-radius:.5mm; flex:none; }
+.k-tick span{ font-size:7.6pt; font-weight:700; letter-spacing:.045em; }
+.k-tick u{ flex:1; border-bottom:.6pt solid var(--k-rule); height:3.2mm; text-decoration:none; margin-left:1mm; }
+
+/* designer picker: one line, whatever the roster's length */
+.k-pick{ display:flex; align-items:center; gap:3mm; margin:1.6mm 0; }
+.k-pick > b{ font-size:6.2pt; letter-spacing:.19em; font-weight:700; color:var(--k-label); white-space:nowrap; }
+.k-pick .k-tick{ width:auto; flex:1 1 auto; padding:0; }
+.k-pick .k-tick span{ white-space:nowrap; }
+.k-pick .k-tick.on i{ background:var(--desg); border-color:var(--desg); }
+.k-pick .k-tick.on span{ color:var(--desg); }
+
+.k-cols{
+  display:flex; align-items:flex-end;
+  font-size:6.2pt; letter-spacing:.19em; font-weight:700; color:var(--k-label);
+  padding:0 0 1.1mm 8mm;
+}
+.k-cols .s{ width:54mm; } .k-cols .m{ width:30mm; }
+.k-cols .d{ width:48mm; } .k-cols .g{ width:48mm; }
+
+.k-band{
+  display:flex; align-items:center; justify-content:space-between;
+  color:#fff; padding:1.15mm 3mm;
+  font-size:7pt; letter-spacing:.2em; font-weight:800; margin-top:1mm;
+}
+.k-band .n{ font-size:6.4pt; letter-spacing:.16em; font-weight:700; }
+
+.k-stage{ display:flex; align-items:center; padding:.55mm 3mm; border-bottom:.4pt solid var(--k-hair); }
+.k-stage.alt{ background:#fafafa; }
+.k-stage .num{
+  width:3.9mm; height:3.9mm; border-radius:.7mm; flex:none;
+  color:#fff; font-size:6.6pt; font-weight:700;
+  display:flex; align-items:center; justify-content:center; margin-right:3.8mm;
+}
+.k-stage .name{ width:54mm; font-size:8pt; font-weight:800; letter-spacing:.035em; }
+.k-stage .by{ width:30mm; font-size:7.8pt; font-weight:700; }
+.k-stage .sign{ width:44mm; border-bottom:.6pt solid var(--k-rule); height:4.1mm; margin-right:4mm; }
+.k-stage .sign.last{ width:48mm; margin-right:0; }
+
+.k-stops{
+  margin-top:3.8mm; background:var(--k-char); border-left:2.2mm solid var(--c4);
+  color:#fff; padding:2.8mm 4.5mm 3mm;
+}
+.k-stops h4{ font-size:8pt; letter-spacing:.2em; font-weight:800; margin-bottom:2mm; }
+.k-stops li{
+  list-style:none; font-size:7.4pt; line-height:1.45; font-weight:500;
+  padding-left:3.4mm; position:relative;
+}
+.k-stops li::before{
+  content:""; position:absolute; left:0; top:1.5mm;
+  width:1.2mm; height:1.2mm; background:var(--c4);
+}
+.k-foot{
+  display:flex; justify-content:space-between; margin-top:2.6mm;
+  font-size:6pt; letter-spacing:.18em; font-weight:600; color:var(--k-label);
+}
+
+/* ─────────────── A6, four to the sheet (form JC-01S) ─────────────── */
+.grid4{
+  height:100%;
+  display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
+  position:relative;
+}
+.cut{ position:absolute; }
+.cut.v{ left:50%; top:0; height:100%; border-left:.4pt dashed #c9c9c9; }
+.cut.h{ top:50%; left:0; width:100%; border-top:.4pt dashed #c9c9c9; }
+.tile{ padding:5mm; overflow:hidden; }
+.mini{ width:100%; height:100%; display:flex; flex-direction:column; }
+.mini.sales{ border-left:3mm solid var(--sales); }
+.mini.desg{ border-right:3mm solid var(--desg); }
+
+.m-head{
+  background:var(--k-char); color:#fff; padding:2.2mm 3.2mm 2mm;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.m-brand{ font-size:4.6pt; letter-spacing:.34em; font-weight:600; opacity:.85; }
+.m-title{ font-size:12.5pt; font-weight:800; letter-spacing:.02em; line-height:1.05; margin:.6mm 0; }
+.m-tag{ font-size:4.2pt; letter-spacing:.14em; font-weight:600; opacity:.9; white-space:nowrap; }
+.m-who{
+  display:inline-block; background:var(--sales); color:#fff;
+  font-size:4.2pt; font-weight:800; letter-spacing:.12em;
+  padding:.4mm 1.2mm .5mm; border-radius:.6mm; margin-right:1.4mm;
+}
+.m-codes{ display:flex; gap:1.8mm; }
+.m-code{ background:#fff; border-radius:1mm; padding:1.2mm 1.6mm 1.4mm; width:19mm; }
+.m-code .k{ font-size:4.2pt; letter-spacing:.14em; font-weight:700; color:var(--k-label); }
+.m-code .v{
+  margin-top:1.2mm; font-size:7.4pt; font-weight:800; color:var(--k-char);
+  border-bottom:.5pt solid var(--k-rule); padding-bottom:.4mm;
+}
+.m-stripe{ display:flex; height:1.5mm; flex:none; }
+.m-stripe i{ display:block; height:100%; }
+
+.m-fields{ padding:1.9mm 0 .5mm; }
+.m-row{ display:flex; gap:3.4mm; margin-bottom:1.4mm; }
+.m-f{ flex:1; }
+.m-f.w2{ flex:1.7; }
+.m-f label{
+  display:block; font-size:4.2pt; letter-spacing:.15em; font-weight:700;
+  color:var(--k-label); text-transform:uppercase;
+}
+.m-f .line{ height:3.4mm; border-bottom:.5pt solid var(--k-rule); }
+
+.m-pick{ display:flex; align-items:center; gap:3mm; padding:0 0 1.3mm; }
+.m-pick > b{ font-size:4.1pt; letter-spacing:.15em; font-weight:700; color:var(--k-label); white-space:nowrap; }
+.m-pick .t{ display:flex; align-items:center; gap:.8mm; flex:0 0 auto; }
+.m-pick .t i{ display:block; width:2mm; height:2mm; flex:none; border:.5pt solid #9d9d9d; border-radius:.4mm; }
+.m-pick .t span{ font-size:4pt; font-weight:700; white-space:nowrap; }
+.m-pick .t.on i{ background:var(--desg); border-color:var(--desg); }
+.m-pick .t.on span{ color:var(--desg); }
+
+.m-sec{ display:flex; align-items:baseline; gap:1.6mm; margin:.3mm 0 .6mm; }
+.m-sec span{ font-size:5.6pt; font-weight:800; letter-spacing:.14em; }
+.m-sec em{ font-size:4.1pt; font-style:normal; letter-spacing:.05em; color:var(--k-label); font-weight:500; }
+.m-cols{
+  display:flex; font-size:4.1pt; letter-spacing:.15em; font-weight:700;
+  color:var(--k-label); padding:0 2mm .8mm 7.1mm;
+}
+.m-cols .s{ flex:1; } .m-cols .m{ width:13mm; }
+.m-cols .d{ width:12mm; } .m-cols .g{ width:19mm; }
+
+.m-band{
+  display:flex; align-items:center; justify-content:space-between;
+  color:#fff; padding:.6mm 2mm; font-size:4.4pt;
+  letter-spacing:.16em; font-weight:800; margin-top:.4mm;
+}
+.m-band .n{ font-size:4.1pt; letter-spacing:.12em; font-weight:700; }
+.m-stage{ display:flex; align-items:center; height:4mm; padding:0 2mm; border-bottom:.35pt solid var(--k-hair); }
+.m-stage.alt{ background:#fafafa; }
+.m-stage .num{
+  width:3.2mm; height:3.2mm; border-radius:.5mm; flex:none;
+  color:#fff; font-size:4.3pt; font-weight:700;
+  display:flex; align-items:center; justify-content:center; margin-right:1.9mm;
+}
+.m-stage .name{ flex:1; font-size:5.4pt; font-weight:800; letter-spacing:.02em; }
+.m-stage .by{ width:13mm; font-size:5pt; font-weight:700; }
+.m-stage .sign{ width:10.6mm; border-bottom:.5pt solid var(--k-rule); height:2.8mm; margin-right:1.4mm; }
+.m-stage .sign.last{ width:19mm; margin-right:0; }
+
+.m-stops{
+  margin-top:1.6mm; background:var(--k-char); border-left:1.4mm solid var(--c4);
+  color:#fff; padding:1.4mm 2.2mm 1.5mm;
+}
+.m-stops h4{ font-size:4.4pt; letter-spacing:.16em; font-weight:800; margin-bottom:1mm; }
+.m-stops li{
+  list-style:none; font-size:4.3pt; line-height:1.4; font-weight:500;
+  padding-left:2.2mm; position:relative;
+}
+.m-stops li::before{
+  content:""; position:absolute; left:0; top:.9mm;
+  width:.9mm; height:.9mm; background:var(--c4);
+}
+.m-foot{
+  display:flex; justify-content:space-between; gap:2mm;
+  margin-top:auto; padding-top:1.4mm;
+  font-size:3.9pt; letter-spacing:.12em; font-weight:600; color:var(--k-label);
+}
+
+/* ─────────────────────────────── print ─────────────────────────────── */
+@page{ size:A4 portrait; margin:0; }
+@media print{
+  body{ background:#fff; }
+  .rail, .stage .cap{ display:none !important; }
+  .app{ display:block; }
+  .stage{ padding:0; display:block; }
+  .hold{ display:block; }
+  .sheet{ transform:none !important; box-shadow:none; }
+}
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; transition:none !important; }
+}
+</style>
+
+<div class="app">
+  <aside class="rail">
+    <div class="brand"><b>KLEVER</b><span>JOB CARD PRESS</span></div>
+
+    <div class="group">
+      <h2>Salesperson</h2>
+      <div class="people" id="salesList"></div>
+      <form class="add" id="addSales">
+        <input type="text" name="name" placeholder="Add salesperson" maxlength="22" aria-label="New salesperson name">
+        <input type="color" name="color" value="#8a6d3b" aria-label="Colour for the new salesperson">
+        <button type="submit">Add</button>
+      </form>
+    </div>
+
+    <div class="group">
+      <h2>Designer</h2>
+      <div class="people" id="desgList"></div>
+      <form class="add" id="addDesg">
+        <input type="text" name="name" placeholder="Add designer" maxlength="22" aria-label="New designer name">
+        <input type="color" name="color" value="#2f7d6b" aria-label="Colour for the new designer">
+        <button type="submit">Add</button>
+      </form>
+    </div>
+
+    <div class="group">
+      <h2>Sheet</h2>
+      <div class="seg" id="sizeSeg">
+        <button type="button" data-size="a4" aria-pressed="true">A4<small>one card</small></button>
+        <button type="button" data-size="a6" aria-pressed="false">A6<small>four to a sheet</small></button>
+      </div>
+    </div>
+
+    <button class="print" id="printBtn" type="button">Print this sheet</button>
+
+    <p class="note" id="status">
+      Colour runs down the <b>left edge for the salesperson</b> and the
+      <b>right edge for the designer</b>, so a card says whose job it is
+      without being read. Print at <b>100% / actual size</b>; on A6, cut once
+      across and once down.
+    </p>
+  </aside>
+
+  <main class="stage">
+    <div class="cap" id="cap">Form JC-01 · A4</div>
+    <div class="hold" id="hold">
+      <div class="sheet" id="sheet"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ═══════════════ the shop's sixteen stages — Form JC-01 REV 2 ═══════════════
+   Quoted verbatim from the printed card: the cabinet, the wall labels and this
+   page must always read the same. */
+const STAGES = [
+  ["COMMERCIAL", "STAGES 1–5", "c1", [
+    [1,  "LEAD",                    "Salesperson"],
+    [2,  "ADVANCE PAID",            "Betty"],
+    [3,  "FINAL MEASUREMENT",       "Designer"],
+    [4,  "MATERIAL SELECTION",      "Designer"],
+    [5,  "PURCHASE APPROVAL",       "Ephrata"]]],
+  ["FINANCE &amp; PROCUREMENT", "STAGES 6–9", "c2", [
+    [6,  "MATERIALS ORDERED",       "Getachew"],
+    [7,  "MATERIALS RECEIVED",      "Yordanos"],
+    [8,  "FINAL PAYMENT REQUESTED", "Betty"],
+    [9,  "FINAL PAYMENT RECEIVED",  "Betty"]]],
+  ["PRODUCTION", "STAGES 10–12", "c3", [
+    [10, "PRODUCTION APPROVED",     "Liu"],
+    [11, "PRODUCTION COMPLETED",    "Amha"],
+    [12, "QC RELEASED",             "Wede"]]],
+  ["DELIVERY &amp; AFTER-SALES", "STAGES 13–16", "c4", [
+    [13, "READY FOR DELIVERY",      "Betty"],
+    [14, "DELIVERED / INSTALLED",   "Elias"],
+    [15, "CUSTOMER ACCEPTANCE",     "Elias"],
+    [16, "AFTER-SALES FOLLOW-UP",   "Salesperson"]]]
+];
+
+const ORDERED = ["MODERN KITCHEN","TRADITIONAL KITCHEN","MASTER CLOSET","WARDROBE",
+                 "SHOE RACK","OPEN SHELF","LAUNDRY","OTHER"];
+
+const STOPS = [
+  "No production starts without 100% final payment confirmed by Betty and logged in the Job File.",
+  "No delivery without QC release signed by Wede.",
+  "No assembler payment without the physical Customer Acceptance Form in the Job File."
+];
+const STOPS_SHORT = [
+  "No production without 100% final payment confirmed by Betty.",
+  "No delivery without QC release signed by Wede.",
+  "No assembler payment without the signed Customer Acceptance Form."
+];
+
+/* The roster the page falls back to when it is opened without its store —
+   the people printed on the cards today. The store, once it answers, wins. */
+const FALLBACK = [
+  { id:"bruktawit", kind:"sales",    name:"BRUKTAWIT",       color:"#6d4fa2", order:1 },
+  { id:"tsega",     kind:"sales",    name:"TSEGA",           color:"#17867e", order:2 },
+  { id:"yonus",     kind:"designer", name:"YONUS",           color:"#d99a2b", order:1 },
+  { id:"tekelawold",kind:"designer", name:"TEKELAWOLD",      color:"#c2418c", order:2 },
+  { id:"yohannes",  kind:"designer", name:"YOHANNES",        color:"#24457e", order:3 },
+  { id:"abrhamw",   kind:"designer", name:"ABRHAM WEBESHET", color:"#7a9a1f", order:4 },
+  { id:"abrhamg",   kind:"designer", name:"ABRHAM GOSSAYE",  color:"#8a4b25", order:5 }
+];
+
+/* Where the roster is kept. On claude.ai the shared store holds it and every
+   viewer sees the same people. Served as a plain page (GitHub Pages, or the
+   office PC) there is no store, so it is kept in this browser instead —
+   additions survive a reload, but they are this device's own. */
+const LOCAL_KEY = "klever.roster.v1";
+
+function loadLocal(){
+  try{
+    const rows = JSON.parse(localStorage.getItem(LOCAL_KEY) || "null");
+    if (Array.isArray(rows) && rows.length) return rows;
+  }catch(e){ /* private window, or storage blocked */ }
+  return null;
+}
+
+function saveLocal(){
+  if (store) return;                     // the shared store is the record when it answers
+  try{ localStorage.setItem(LOCAL_KEY, JSON.stringify(roster)); }catch(e){}
+}
+
+let roster = loadLocal() || FALLBACK.slice();
+let sales = null;       // chosen salesperson
+let desg = null;        // chosen designer
+let size = "a4";
+let store = null;       // the db namespace, once it answers
+let canWrite = true;    // until a write is refused
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+const of = (kind) => roster.filter((p) => p.kind === kind)
+                           .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+/* A pocket card is 95mm wide: two-word names are cut to an initial there,
+   exactly as the printed JC-01S does it. */
+function shortName(n){
+  const parts = String(n).trim().split(/\s+/);
+  return parts.length > 1 ? parts[0] + " " + parts[1][0] + "." : parts[0];
+}
+
+/* ───────────────────────────── the A4 card ───────────────────────────── */
+function trackerA4(){
+  let out = "", row = 0;
+  STAGES.forEach((band) => {
+    const col = "var(--" + band[2] + ")";
+    out += '<div class="k-band" style="background:' + col + '"><span>' + band[0] +
+           '</span><span class="n">' + band[1] + '</span></div>';
+    band[3].forEach((s) => {
+      out += '<div class="k-stage' + (row++ % 2 ? " alt" : "") + '">' +
+               '<div class="num" style="background:' + col + '">' + s[0] + '</div>' +
+               '<div class="name">' + s[1] + '</div>' +
+               '<div class="by" style="color:' + col + '">' + s[2] + '</div>' +
+               '<div class="sign"></div><div class="sign last"></div></div>';
+    });
+  });
+  return out;
+}
+
+/* The designer row holds one line however many designers the shop has:
+   the type steps down as the roster grows, and past ten it becomes a
+   write-in line rather than a row of unreadable ticks. */
+function designerRow(list, mini){
+  const wide = mini ? 5.2 : 2.6;      // rough mm per character at full size
+  const label = mini ? "DESIGNER" : "DESIGNER &mdash; TICK ONE";
+  if (list.length > 10){
+    return mini
+      ? '<div class="m-pick"><b>' + label + '</b><span class="t" style="flex:1"><u style="flex:1;border-bottom:.5pt solid var(--k-rule);height:3mm;display:block"></u></span></div>'
+      : '<div class="k-pick"><b>' + label + '</b><div class="k-tick" style="flex:1"><u></u></div></div>';
+  }
+  const chars = list.reduce((a, p) => a + (mini ? shortName(p.name) : p.name).length, 0);
+  let fs;
+  if (mini) fs = chars > 60 ? 3.4 : chars > 46 ? 3.7 : 4;
+  else      fs = chars > 90 ? 6 : chars > 66 ? 6.8 : 7.6;
+  const cls = mini ? "t" : "k-tick";
+  const ticks = list.map((p) => {
+    const on = desg && desg.id === p.id ? " on" : "";
+    const nm = mini ? shortName(p.name) : p.name;
+    return '<div class="' + cls + on + '"><i></i><span style="font-size:' + fs + 'pt">' +
+           esc(nm) + "</span></div>";
+  }).join("");
+  return '<div class="' + (mini ? "m-pick" : "k-pick") + '"><b>' + label + "</b>" + ticks + "</div>";
+}
+
+function cardA4(){
+  const ds = of("designer");
+  const cls = (sales ? " sales" : "") + (desg ? " desg" : "");
+  const style = (sales ? "--sales:" + sales.color + ";" : "") + (desg ? "--desg:" + desg.color + ";" : "");
+  const who = sales ? '<span class="k-who" style="color:' + sales.color + '">' + esc(sales.name) + "</span>" : "";
+  const tagline = sales ? "ONE CARD PER JOB" : "ONE CARD PER JOB &nbsp;&mdash;&nbsp; MOVES WITH THE BOARD";
+  const salesLine = sales
+    ? '<div class="line filled">' + esc(sales.name.charAt(0) + sales.name.slice(1).toLowerCase()) + "</div>"
+    : '<div class="line"></div>';
+
+  return '<div class="a4pad"><div class="card4' + cls + '" style="' + style + '">' +
+    '<div class="k-head"><div>' +
+      '<div class="k-brand">KLEVER</div><div class="k-title">JOB CARD</div>' +
+      '<div class="k-tag">' + who + tagline + "</div></div>" +
+      '<div class="k-codes">' +
+        '<div class="k-code"><div class="k">LEAD ID</div><div class="v">L</div></div>' +
+        '<div class="k-code"><div class="k">JOB CODE</div><div class="v">KK</div></div>' +
+      "</div></div>" +
+    '<div class="k-stripe">' +
+      '<i style="width:31.25%;background:var(--c1)"></i><i style="width:25%;background:var(--c2)"></i>' +
+      '<i style="width:18.75%;background:var(--c3)"></i><i style="width:25%;background:var(--c4)"></i></div>' +
+
+    '<div class="k-sec"><b>1</b><span>CUSTOMER &amp; ORDER</span></div>' +
+    '<div class="k-row"><div class="k-f w2"><label>Customer Name</label><div class="line"></div></div>' +
+      '<div class="k-f"><label>Phone</label><div class="line"></div></div></div>' +
+    '<div class="k-row"><div class="k-f"><label>Site Location / Delivery Address</label><div class="line"></div></div></div>' +
+    '<div class="k-row"><div class="k-f w2"><label>Salesperson</label>' + salesLine + "</div>" +
+      '<div class="k-f"><label>Lead Date</label><div class="line"></div></div></div>' +
+
+    designerRow(ds, false) +
+
+    '<div class="k-sec" style="margin:1mm 0 0">' +
+      '<span style="font-size:6.2pt;letter-spacing:.19em;color:var(--k-label);font-weight:700">WHAT THEY ORDERED</span>' +
+      "<em>tick all that apply</em></div>" +
+    '<div class="k-ticks">' + ORDERED.map((o) =>
+      '<div class="k-tick"><i></i><span>' + o + "</span>" + (o === "OTHER" ? "<u></u>" : "") + "</div>").join("") +
+    "</div>" +
+
+    '<div class="k-sec"><b>2</b><span>COMMERCIAL</span></div>' +
+    '<div class="k-row">' +
+      '<div class="k-f"><label>Quote Value (Birr)</label><div class="line"></div></div>' +
+      '<div class="k-f"><label>Area (m²)</label><div class="line"></div></div>' +
+      '<div class="k-f"><label>Target Delivery</label><div class="line"></div></div></div>' +
+    '<div class="k-row">' +
+      '<div class="k-f"><label>Advance 50% – Date</label><div class="line"></div></div>' +
+      '<div class="k-f"><label>Final 100% – Date</label><div class="line"></div></div>' +
+      '<div class="k-f"><label>WhatsApp Group Opened</label><div class="line"></div></div></div>' +
+
+    '<div class="k-sec"><b>3</b><span>STAGE TRACKER</span>' +
+      "<em>date and sign every stage &mdash; no signature, no move</em></div>" +
+    '<div class="k-cols"><div class="s">STAGE</div><div class="m">MOVED BY</div>' +
+      '<div class="d">DATE</div><div class="g">SIGNATURE</div></div>' +
+    trackerA4() +
+
+    '<div class="k-stops"><h4>HARD STOPS &mdash; NON-NEGOTIABLE</h4><ul>' +
+      STOPS.map((s) => "<li>" + s + "</li>").join("") + "</ul></div>" +
+    '<div class="k-foot"><span>KLEVER &nbsp;·&nbsp; FORM JC-01 &nbsp;·&nbsp; REV 2 &nbsp;·&nbsp; EFFECTIVE 19 SEPTEMBER 2026</span>' +
+      "<span>PAGE 1 OF 1</span></div>" +
+  "</div></div>";
+}
+
+/* ──────────────────── the A6 card, four to the sheet ──────────────────── */
+function trackerA6(){
+  let out = "", row = 0;
+  STAGES.forEach((band) => {
+    const col = "var(--" + band[2] + ")";
+    out += '<div class="m-band" style="background:' + col + '"><span>' + band[0] +
+           '</span><span class="n">' + band[1] + '</span></div>';
+    band[3].forEach((s) => {
+      out += '<div class="m-stage' + (row++ % 2 ? " alt" : "") + '">' +
+               '<div class="num" style="background:' + col + '">' + s[0] + '</div>' +
+               '<div class="name">' + s[1] + '</div>' +
+               '<div class="by" style="color:' + col + '">' + s[2] + '</div>' +
+               '<div class="sign"></div><div class="sign last"></div></div>';
+    });
+  });
+  return out;
+}
+
+function cardA6(){
+  const ds = of("designer");
+  const cls = (sales ? " sales" : "") + (desg ? " desg" : "");
+  const style = (sales ? "--sales:" + sales.color + ";" : "") + (desg ? "--desg:" + desg.color + ";" : "");
+  const who = sales ? '<span class="m-who">' + esc(sales.name) + "</span>" : "";
+  const tagline = sales ? "ONE CARD PER JOB" : "ONE CARD PER JOB &nbsp;&mdash;&nbsp; MOVES WITH THE BOARD";
+
+  return '<div class="mini' + cls + '" style="' + style + '">' +
+    '<div class="m-head"><div>' +
+      '<div class="m-brand">KLEVER</div><div class="m-title">JOB CARD</div>' +
+      '<div class="m-tag">' + who + tagline + "</div></div>" +
+      '<div class="m-codes">' +
+        '<div class="m-code"><div class="k">LEAD ID</div><div class="v">L</div></div>' +
+        '<div class="m-code"><div class="k">JOB CODE</div><div class="v">KK</div></div>' +
+      "</div></div>" +
+    '<div class="m-stripe">' +
+      '<i style="width:31.25%;background:var(--c1)"></i><i style="width:25%;background:var(--c2)"></i>' +
+      '<i style="width:18.75%;background:var(--c3)"></i><i style="width:25%;background:var(--c4)"></i></div>' +
+    '<div class="m-fields">' +
+      '<div class="m-row"><div class="m-f w2"><label>Customer Name</label><div class="line"></div></div>' +
+        '<div class="m-f"><label>Phone</label><div class="line"></div></div></div>' +
+      '<div class="m-row"><div class="m-f w2"><label>What They Ordered</label><div class="line"></div></div>' +
+        '<div class="m-f"><label>Target Delivery</label><div class="line"></div></div></div>' +
+    "</div>" +
+    designerRow(ds, true) +
+    '<div class="m-sec"><span>STAGE TRACKER</span><em>no signature, no move</em></div>' +
+    '<div class="m-cols"><div class="s">STAGE</div><div class="m">MOVED BY</div>' +
+      '<div class="d">DATE</div><div class="g">SIGNATURE</div></div>' +
+    trackerA6() +
+    '<div class="m-stops"><h4>HARD STOPS &mdash; NON-NEGOTIABLE</h4><ul>' +
+      STOPS_SHORT.map((s) => "<li>" + s + "</li>").join("") + "</ul></div>" +
+    '<div class="m-foot"><span>FORM JC-01S &nbsp;·&nbsp; REV 2 &nbsp;·&nbsp; 19 SEP 2026</span>' +
+      "<span>SHORT FORM OF JC-01</span></div>" +
+  "</div>";
+}
+
+function sheetA6(){
+  const one = cardA6();
+  return '<div class="grid4"><div class="cut v"></div><div class="cut h"></div>' +
+         Array.from({ length:4 }, () => '<div class="tile">' + one + "</div>").join("") +
+         "</div>";
+}
+
+/* ─────────────────────────────── render ─────────────────────────────── */
+function peopleRow(p, chosen, removable){
+  const on = chosen && chosen.id === p.id;
+  return '<div class="person" role="button" tabindex="0" aria-pressed="' + (on ? "true" : "false") +
+         '" data-id="' + esc(p.id) + '" data-kind="' + p.kind + '">' +
+           '<span class="sw" style="background:' + esc(p.color) + '"></span>' +
+           '<span class="nm">' + esc(p.name) + "</span>" +
+           (on ? '<span class="tag">ON CARD</span>' : "") +
+           (removable ? '<button class="drop" type="button" data-drop="' + esc(p.id) +
+                        '" aria-label="Remove ' + esc(p.name) + '">×</button>' : "") +
+         "</div>";
+}
+
+function renderRail(){
+  $("#salesList").innerHTML = of("sales").map((p) => peopleRow(p, sales, canWrite)).join("") ||
+    '<p class="note">No salespeople yet — add one below.</p>';
+  $("#desgList").innerHTML = of("designer").map((p) => peopleRow(p, desg, canWrite)).join("") ||
+    '<p class="note">No designers yet — add one below.</p>';
+}
+
+function renderSheet(){
+  const sheet = $("#sheet");
+  sheet.innerHTML = size === "a4" ? cardA4() : sheetA6();
+  $("#cap").textContent = size === "a4"
+    ? "Form JC-01 · A4 · one card"
+    : "Form JC-01S · A6 · four to the sheet, cut on the dashes";
+  fit();
+}
+
+function fit(){
+  const px = 96 / 25.4;
+  const stage = document.querySelector(".stage");
+  const avail = stage.clientWidth - 68;
+  const z = Math.min(1, avail / (209.4 * px));
+  $("#sheet").style.setProperty("--zoom", z);
+  $("#hold").style.height = 296.4 * px * z + "px";
+}
+
+function render(){ renderRail(); renderSheet(); }
+
+/* ───────────────────────────── interaction ───────────────────────────── */
+function pick(kind, id){
+  const p = roster.find((x) => x.id === id);
+  if (!p) return;
+  if (kind === "sales") sales = sales && sales.id === id ? null : p;
+  else                  desg  = desg  && desg.id  === id ? null : p;
+  render();
+}
+
+document.querySelectorAll(".people").forEach((list) => {
+  list.addEventListener("click", (e) => {
+    const drop = e.target.closest("[data-drop]");
+    if (drop){ e.stopPropagation(); remove(drop.dataset.drop); return; }
+    const row = e.target.closest(".person");
+    if (row) pick(row.dataset.kind, row.dataset.id);
+  });
+  list.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const row = e.target.closest(".person");
+    if (!row) return;
+    e.preventDefault();
+    pick(row.dataset.kind, row.dataset.id);
+  });
+});
+
+$("#sizeSeg").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-size]");
+  if (!b) return;
+  size = b.dataset.size;
+  $("#sizeSeg").querySelectorAll("button").forEach((x) =>
+    x.setAttribute("aria-pressed", String(x.dataset.size === size)));
+  renderSheet();
+});
+
+$("#printBtn").addEventListener("click", () => window.print());
+window.addEventListener("resize", fit);
+
+function slug(name){
+  const base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "person";
+  let id = base, n = 2;
+  while (roster.some((p) => p.id === id)) id = base + "-" + n++;
+  return id;
+}
+
+function addPerson(kind, name, color){
+  const clean = name.trim().toUpperCase();
+  if (!clean) return;
+  const order = Math.max(0, ...of(kind).map((p) => p.order || 0)) + 1;
+  const p = { id:slug(clean), kind, name:clean, color, order };
+  roster.push(p);
+  render();
+  save(p);
+  saveLocal();
+}
+
+function remove(id){
+  const p = roster.find((x) => x.id === id);
+  if (!p) return;
+  roster = roster.filter((x) => x.id !== id);
+  if (sales && sales.id === id) sales = null;
+  if (desg && desg.id === id) desg = null;
+  render();
+  saveLocal();
+  if (store) store.doc("roster/" + id).delete().catch(refused);
+}
+
+$("#addSales").addEventListener("submit", (e) => {
+  e.preventDefault();
+  addPerson("sales", e.target.name.value, e.target.color.value);
+  e.target.reset();
+});
+$("#addDesg").addEventListener("submit", (e) => {
+  e.preventDefault();
+  addPerson("designer", e.target.name.value, e.target.color.value);
+  e.target.reset();
+});
+
+/* ───────────────────────── the shared roster ─────────────────────────
+   Everyone who opens this link sees the same people. Without the store
+   the page still prints — it falls back to the roster above and says so. */
+function refused(err){
+  canWrite = false;
+  $("#status").innerHTML =
+    "<b>This copy is read-only.</b> The card prints exactly as it does for " +
+    "everyone else, but people added here stay on this screen only. Ask the " +
+    "owner of the link for edit access to change the roster for the shop.";
+  renderRail();
+  console.warn("roster write refused", err);
+}
+
+function save(p){
+  if (!store) return;
+  store.doc("roster/" + p.id)
+       .set({ kind:p.kind, name:p.name, color:p.color, order:p.order })
+       .catch(refused);
+}
+
+render();
+
+(async () => {
+  const db = await window.claude?.use?.("db");
+  if (!db) return;                       // no store in this view: fallback stands
+  store = db;
+  db.collection("roster").onSnapshot((snap) => {
+    const rows = snap.docs.map((d) => Object.assign({ id:d.id }, d.data() || {}));
+    if (!rows.length) return;            // empty store: keep the printed roster
+    roster = rows.filter((r) => r.name && r.kind);
+    if (sales && !roster.some((p) => p.id === sales.id)) sales = null;
+    if (desg && !roster.some((p) => p.id === desg.id)) desg = null;
+    render();
+  }, (err) => console.warn("roster read failed", err));
+})();
+</script>

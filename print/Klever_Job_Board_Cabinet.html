@@ -1,0 +1,1004 @@
+<title>Klever Job Board Cabinet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --bg:#f3f2ee;--card:#ffffff;--ink:#1e1d1a;--ink2:#6b675d;--line:#d8d4c9;
+    --oak:#d8b280;--oak-d:#a87f4c;--char:#332f2a;
+    --z1:#4a86c8;--z2:#4a9d5b;--z3:#e0714a;--z4:#e0475f;--z5:#7a7368;
+    --f-d:"Anton",Impact,"Arial Narrow",sans-serif;
+    --f-b:"Karla",system-ui,-apple-system,Segoe UI,sans-serif;
+    --f-m:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#16150f;--card:#201e18;--ink:#eee9dd;--ink2:#a49b86;--line:#3a362c;
+      --oak:#c9a268;--oak-d:#8a6737;--char:#e8e3d6;
+      --z1:#5d95d1;--z2:#57a866;--z3:#e8805a;--z4:#e85a71;--z5:#938b7c;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#16150f;--card:#201e18;--ink:#eee9dd;--ink2:#a49b86;--line:#3a362c;
+    --oak:#c9a268;--oak-d:#8a6737;--char:#e8e3d6;
+    --z1:#5d95d1;--z2:#57a866;--z3:#e8805a;--z4:#e85a71;--z5:#938b7c;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--f-b);font-size:16px;line-height:1.62;margin:0;padding:0 0 80px;}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px;}
+
+  /* hero — committed dark studio */
+  .hero{background:#121110;color:#f2ede3;padding:44px 0 34px;border-bottom:1px solid #2a2622;}
+  .eyebrow{font-family:var(--f-m);font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:#c9a268;margin:0 0 14px;}
+  .hero h1{font-family:var(--f-d);font-weight:400;font-size:clamp(46px,9.5vw,112px);line-height:.88;margin:0;color:#f7f3ea;text-wrap:balance;}
+  .hero h1 span{color:#c9a268;}
+  .hero .say{max-width:54ch;margin:18px 0 0;font-size:17px;color:#cdc5b6;}
+
+  .stage{position:relative;margin:26px 0 0;background:#0d0c0b;border:1px solid #29251f;overflow:hidden;}
+  #view{display:block;width:100%;height:clamp(400px,62vh,660px);touch-action:none;cursor:grab;}
+  #view:active{cursor:grabbing;}
+  .fallback{
+    display:none;padding:40px 24px;text-align:center;color:#a2977f;font-size:14px;
+  }
+  .stage.failed #view{display:none;}
+  .stage.failed .fallback{display:block;}
+  .views{
+    position:absolute;left:14px;bottom:14px;display:flex;gap:6px;flex-wrap:wrap;
+  }
+  .views button{
+    font-family:var(--f-m);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:#e8e0d1;background:rgba(28,25,22,.82);border:1px solid #453e35;
+    padding:8px 12px;cursor:pointer;backdrop-filter:blur(6px);
+  }
+  .views button:hover{background:rgba(58,51,43,.9);border-color:#6b6051;}
+  .views button[aria-pressed="true"]{background:#c9a268;color:#1a1713;border-color:#c9a268;}
+  .views button:focus-visible{outline:2px solid #c9a268;outline-offset:2px;}
+  .hint{
+    position:absolute;right:16px;bottom:18px;font-family:var(--f-m);font-size:10.5px;
+    letter-spacing:.18em;text-transform:uppercase;color:#7d7365;
+  }
+  @media(max-width:620px){.hint{display:none;}}
+
+  .chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(122px,1fr));border-top:1px solid #2e2a25;margin-top:22px;}
+  .chips div{padding:16px 4px 10px;border-right:1px solid #2e2a25;}
+  .chips div:last-child{border-right:0;}
+  .chips b{display:block;font-family:var(--f-m);font-size:21px;font-weight:500;color:#f7f3ea;font-variant-numeric:tabular-nums;}
+  .chips i{display:block;font-style:normal;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#918876;margin-top:5px;}
+
+  section{margin-top:60px;}
+  .head{display:flex;align-items:baseline;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .head h2{font-family:var(--f-d);font-weight:400;font-size:clamp(26px,4vw,38px);margin:0;line-height:1;}
+  .head p{margin:0;color:var(--ink2);font-size:14.5px;max-width:44ch;}
+  p{max-width:64ch;}
+  .intro{font-size:17.5px;max-width:60ch;}
+
+  .why{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:2px;}
+  .why div{background:var(--card);padding:18px 18px 22px;}
+  .why h3{font-family:var(--f-d);font-weight:400;font-size:20px;margin:0 0 6px;letter-spacing:.01em;}
+  .why p{margin:0;font-size:14px;color:var(--ink2);}
+  .why b{color:var(--ink);font-family:var(--f-m);font-size:13px;}
+
+  .lanes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:2px;}
+  .ln{background:var(--card);border-top:5px solid var(--z1);padding:11px 12px 14px;}
+  .ln .n{font-family:var(--f-m);font-size:11.5px;color:var(--ink2);}
+  .ln .t{font-weight:700;font-size:14.5px;line-height:1.22;margin-top:2px;}
+  .ln .m{font-size:12.5px;color:var(--ink2);margin-top:4px;}
+  .ln.hold .n{color:var(--z5);letter-spacing:.14em;}
+
+  .people{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:2px;}
+  .pp{background:var(--card);padding:12px 12px 14px;border-bottom:4px solid var(--oak);}
+  .pp .n{font-family:var(--f-m);font-size:11px;color:var(--ink2);}
+  .pp .t{font-family:var(--f-d);font-weight:400;font-size:19px;margin-top:2px;line-height:1.05;}
+  .pp .r{font-size:11.5px;color:var(--ink2);line-height:1.3;margin-top:4px;}
+
+  .two{display:grid;grid-template-columns:1fr;gap:26px;}
+  @media(min-width:880px){.two{grid-template-columns:1.35fr 1fr;}}
+  figure{margin:0;}
+  .dwg{width:100%;height:auto;display:block;color:var(--ink);background:var(--card);border:1px solid var(--line);}
+  figcaption{font-size:13px;color:var(--ink2);margin-top:10px;padding-top:8px;border-top:1px solid var(--line);}
+  figcaption b{color:var(--ink);font-weight:700;}
+
+  .build{display:grid;grid-template-columns:1fr;gap:34px;}
+  @media(min-width:880px){.build{grid-template-columns:1.15fr 1fr;}}
+  .tw{overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:440px;}
+  th{font-family:var(--f-m);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--ink2);text-align:left;border-bottom:1.5px solid var(--ink);padding:6px 8px;}
+  td{border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top;}
+  td.n,th.n{text-align:right;font-family:var(--f-m);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  tbody tr.sub td{font-family:var(--f-m);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);border-bottom:1px solid var(--ink);padding-top:16px;}
+  ul.buy{list-style:none;padding:0;margin:0;}
+  ul.buy li{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px;}
+  ul.buy b{font-family:var(--f-m);font-weight:500;white-space:nowrap;}
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:0;}
+  ol.steps li{counter-increment:s;position:relative;padding:0 0 12px 38px;margin-bottom:12px;border-bottom:1px solid var(--line);font-size:14.5px;}
+  ol.steps li:last-child{border-bottom:0;}
+  ol.steps li::before{content:counter(s);position:absolute;left:0;top:0;font-family:var(--f-d);font-size:17px;color:var(--oak-d);}
+  h3.sub{font-family:var(--f-d);font-weight:400;font-size:19px;margin:30px 0 14px;}
+  .note{background:var(--card);border-left:4px solid var(--oak);padding:15px 18px;margin-top:26px;max-width:64ch;}
+  .note p{margin:0;font-size:14.5px;}
+  footer{margin-top:60px;padding-top:14px;border-top:1px solid var(--line);font-family:var(--f-m);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+
+<div class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Klever &middot; workshop furniture &middot; DWG KL-JB-01 &middot; Rev 11</p>
+    <h1>JOB BOARD<br><span>CABINET</span></h1>
+    <p class="say">Standing on the floor, 1090 to the top, 3180 long. Fourteen bays &mdash; name plate, sloped card pocket, four box files each. The top is your signing counter.</p>
+
+    <div class="stage" id="stage">
+      <canvas id="view" aria-label="Interactive 3D view of the Klever job board cabinet"></canvas>
+      <div class="fallback">3D view could not load in this browser. The drawings below show the same cabinet.</div>
+      <div class="views">
+        <button type="button" data-v="hero" aria-pressed="true">3/4 view</button>
+        <button type="button" data-v="front" aria-pressed="false">Front</button>
+        <button type="button" data-v="bay" aria-pressed="false">One bay</button>
+        <button type="button" data-v="top" aria-pressed="false">From above</button>
+      </div>
+      <div class="hint">Drag to turn &middot; scroll to zoom</div>
+    </div>
+
+    <div class="chips">
+      <div><b>1090</b><i>To the top</i></div>
+      <div><b>14</b><i>Bays</i></div>
+      <div><b>56</b><i>Box files</i></div>
+      <div><b>213</b><i>Bay width</i></div>
+      <div><b>3180</b><i>Long</i></div>
+      <div><b>320</b><i>Deep</i></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section>
+    <p class="intro">It stands on a 100 plinth, not on the wall. 1090 to the top is counter height, so the whole top becomes a 3.18 m work surface &mdash; take the card out, sign it on the top, put it back.</p>
+    <p>Each bay, floor upward: a box row at 118 to 453, a second at 471 to 806, then the card pocket at 824 to 1042 and the name plate above it. Nothing is out of reach and nothing needs a ladder.</p>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>THE CARD LEANS BACK</h2>
+      <p>This is what makes 1090 work.</p>
+    </div>
+    <div class="why">
+      <div>
+        <h3>42&deg; OFF VERTICAL</h3>
+        <p><b>297 becomes 220.</b> Standing straight up, an A4 card needs 297 of height and there is not that much left once four box files are in the bay. Leaning it back at 42&deg; costs 220 and the job code still faces you.</p>
+      </div>
+      <div>
+        <h3>100 CHARCOAL LIP</h3>
+        <p><b>One strip per bay.</b> The cards rest against it, the live one on top. About twelve fit in the pocket behind it. Lift the front one and the next is already facing you.</p>
+      </div>
+      <div>
+        <h3>THE TOP IS THE DESK</h3>
+        <p><b>3180 &times; 320 at 1090.</b> Standing height. Betty&rsquo;s daily board-to-file check happens on top of the cabinet holding both the card and the box.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>THE 14 BAYS</h2>
+      <p>Grouped by department, left to right, in the Klever colours.</p>
+    </div>
+    <div class="people">
+      <div class="pp" style="border-color:var(--z5)"><div class="n">01</div><div class="t">Ephrata</div><div class="r">Klever Lead</div></div>
+      <div class="pp" style="border-color:var(--z1)"><div class="n">02</div><div class="t">Sales</div><div class="r">Tigist Lulit Abigya</div></div>
+      <div class="pp" style="border-color:var(--z1)"><div class="n">03</div><div class="t">Design</div><div class="r">Abreham Yonas Tekle</div></div>
+      <div class="pp" style="border-color:var(--z2)"><div class="n">04</div><div class="t">Betty</div><div class="r">Finance, board</div></div>
+      <div class="pp" style="border-color:var(--z2)"><div class="n">05</div><div class="t">Sabella</div><div class="r">Finance backup</div></div>
+      <div class="pp" style="border-color:var(--z2)"><div class="n">06</div><div class="t">Kidan</div><div class="r">Finance control</div></div>
+      <div class="pp" style="border-color:var(--z2)"><div class="n">07</div><div class="t">Getachew</div><div class="r">Purchasing</div></div>
+      <div class="pp" style="border-color:var(--z2)"><div class="n">08</div><div class="t">Yordanos</div><div class="r">Store</div></div>
+      <div class="pp" style="border-color:var(--z3)"><div class="n">09</div><div class="t">Liu</div><div class="r">Operations</div></div>
+      <div class="pp" style="border-color:var(--z3)"><div class="n">10</div><div class="t">Amha</div><div class="r">Production</div></div>
+      <div class="pp" style="border-color:var(--z3)"><div class="n">11</div><div class="t">Wede</div><div class="r">QC</div></div>
+      <div class="pp" style="border-color:var(--z4)"><div class="n">12</div><div class="t">Elias</div><div class="r">Site</div></div>
+      <div class="pp" style="border-color:var(--z4)"><div class="n">13</div><div class="t">Ashenafi</div><div class="r">Site helper</div></div>
+      <div class="pp" style="border-color:var(--z4)"><div class="n">14</div><div class="t">Alex</div><div class="r">Logistics</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>THE STAGES STILL RUN THE JOB</h2>
+      <p>They travel on the card, not on the cabinet &mdash; this list is the card.</p>
+    </div>
+    <p>These are the sixteen stages of the Stage Tracker printed on the Job Card, in the same order, with the same owner and the same colour band &mdash; stage 05 on this wall is stage 05 on the card in your hand. Clip a coloured flag on the card for the zone it has reached, and one look at a bay tells you whose desk the job is on and how far it has come. <b>Hold / blocked is not a seventeenth stage.</b> It is a grey flag Ephrata alone may set, and the job keeps the stage number it was on.</p>
+    <div class="lanes">
+      <div class="ln" style="border-color:var(--z1)"><div class="n">01</div><div class="t">Lead</div><div class="m">Salesperson</div></div>
+      <div class="ln" style="border-color:var(--z1)"><div class="n">02</div><div class="t">Advance paid</div><div class="m">Betty</div></div>
+      <div class="ln" style="border-color:var(--z1)"><div class="n">03</div><div class="t">Final measurement</div><div class="m">Designer</div></div>
+      <div class="ln" style="border-color:var(--z1)"><div class="n">04</div><div class="t">Material selection</div><div class="m">Designer</div></div>
+      <div class="ln" style="border-color:var(--z1)"><div class="n">05</div><div class="t">Purchase approval</div><div class="m">Ephrata</div></div>
+      <div class="ln" style="border-color:var(--z2)"><div class="n">06</div><div class="t">Materials ordered</div><div class="m">Getachew</div></div>
+      <div class="ln" style="border-color:var(--z2)"><div class="n">07</div><div class="t">Materials received</div><div class="m">Yordanos</div></div>
+      <div class="ln" style="border-color:var(--z2)"><div class="n">08</div><div class="t">Final payment requested</div><div class="m">Betty</div></div>
+      <div class="ln" style="border-color:var(--z2)"><div class="n">09</div><div class="t">Final payment received</div><div class="m">Betty</div></div>
+      <div class="ln" style="border-color:var(--z3)"><div class="n">10</div><div class="t">Production approved</div><div class="m">Liu</div></div>
+      <div class="ln" style="border-color:var(--z3)"><div class="n">11</div><div class="t">Production completed</div><div class="m">Amha</div></div>
+      <div class="ln" style="border-color:var(--z3)"><div class="n">12</div><div class="t">QC released</div><div class="m">Wede</div></div>
+      <div class="ln" style="border-color:var(--z4)"><div class="n">13</div><div class="t">Ready for delivery</div><div class="m">Betty</div></div>
+      <div class="ln" style="border-color:var(--z4)"><div class="n">14</div><div class="t">Delivered / installed</div><div class="m">Elias</div></div>
+      <div class="ln" style="border-color:var(--z4)"><div class="n">15</div><div class="t">Customer acceptance</div><div class="m">Elias</div></div>
+      <div class="ln" style="border-color:var(--z4)"><div class="n">16</div><div class="t">After-sales follow-up</div><div class="m">Salesperson</div></div>
+      <div class="ln hold" style="border-color:var(--z5)"><div class="n">HOLD</div><div class="t">Hold / blocked</div><div class="m">Ephrata only &middot; not a stage</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>SIZES</h2>
+      <p>All dimensions in mm, measured from the floor.</p>
+    </div>
+    <figure>
+      <svg class="dwg" viewBox="0 0 3760 1500" role="img" aria-label="Front elevation: a floor-standing cabinet 3180 wide and 1090 high on a 100 plinth, divided into fourteen bays. Each bay has a name plate, a sloped card pocket and four standing box files.">
+          <defs>
+            <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+              <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+            </marker>
+          </defs>
+          <line x1="120" y1="1320" x2="3640" y2="1320" stroke="currentColor" stroke-width="4"/>
+          <g stroke="currentColor" stroke-width="2" opacity=".4">
+            <line x1="200" y1="1320" x2="166" y2="1364"/>
+            <line x1="420" y1="1320" x2="386" y2="1364"/>
+            <line x1="640" y1="1320" x2="606" y2="1364"/>
+            <line x1="860" y1="1320" x2="826" y2="1364"/>
+            <line x1="1080" y1="1320" x2="1046" y2="1364"/>
+            <line x1="1300" y1="1320" x2="1266" y2="1364"/>
+            <line x1="1520" y1="1320" x2="1486" y2="1364"/>
+            <line x1="1740" y1="1320" x2="1706" y2="1364"/>
+            <line x1="1960" y1="1320" x2="1926" y2="1364"/>
+            <line x1="2180" y1="1320" x2="2146" y2="1364"/>
+            <line x1="2400" y1="1320" x2="2366" y2="1364"/>
+            <line x1="2620" y1="1320" x2="2586" y2="1364"/>
+            <line x1="2840" y1="1320" x2="2806" y2="1364"/>
+            <line x1="3060" y1="1320" x2="3026" y2="1364"/>
+            <line x1="3280" y1="1320" x2="3246" y2="1364"/>
+            <line x1="3500" y1="1320" x2="3466" y2="1364"/>
+          </g>
+          <rect x="260" y="230" width="3180" height="990" fill="var(--oak)" stroke="currentColor" stroke-width="4"/>
+          <rect x="320" y="1220" width="3060" height="100" fill="var(--char)"/>
+          <rect x="278" y="248" width="3144" height="954" fill="var(--char)"/>
+          <rect x="281" y="248" width="213" height="30" fill="#7a7368"/>
+          <text x="387.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">EPHRATA</text>
+          <rect x="281" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="281" y="286" width="213" height="210" fill="#f6f3ec" stroke="#7d766a" stroke-width="1.5"/>
+          <rect x="281" y="286" width="213" height="26" fill="#eae4d6" stroke="#7d766a" stroke-width="1.5"/>
+          <text x="291" y="305" font-family="IBM Plex Mono" font-size="19" fill="#2b2822">KK160</text>
+          <rect x="281" y="396" width="213" height="100" fill="#7a7368" opacity=".9"/>
+          <rect x="281" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="293" y="529" width="80" height="320" fill="#7a7368" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="381" y="529" width="80" height="320" fill="#6e7178" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="281" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="293" y="882" width="80" height="320" fill="#6e7178" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="381" y="882" width="80" height="320" fill="#8a5b4a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="506" y="248" width="213" height="30" fill="#4a86c8"/>
+          <text x="612.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">SALES</text>
+          <rect x="506" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="506" y="286" width="213" height="210" fill="#f6f3ec" stroke="#7d766a" stroke-width="1.5"/>
+          <rect x="506" y="286" width="213" height="26" fill="#eae4d6" stroke="#7d766a" stroke-width="1.5"/>
+          <text x="516" y="305" font-family="IBM Plex Mono" font-size="19" fill="#2b2822">KK157</text>
+          <rect x="506" y="396" width="213" height="100" fill="#4a86c8" opacity=".9"/>
+          <rect x="506" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="518" y="529" width="80" height="320" fill="#4a86c8" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="606" y="529" width="80" height="320" fill="#8a5b4a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="506" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="518" y="882" width="80" height="320" fill="#8a5b4a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="606" y="882" width="80" height="320" fill="#4c5d6b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="494" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="731" y="248" width="213" height="30" fill="#4a86c8"/>
+          <text x="837.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">DESIGN</text>
+          <rect x="731" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="731" y="286" width="213" height="210" fill="#f6f3ec" stroke="#7d766a" stroke-width="1.5"/>
+          <rect x="731" y="286" width="213" height="26" fill="#eae4d6" stroke="#7d766a" stroke-width="1.5"/>
+          <text x="741" y="305" font-family="IBM Plex Mono" font-size="19" fill="#2b2822">KK154</text>
+          <rect x="731" y="396" width="213" height="100" fill="#4a86c8" opacity=".9"/>
+          <rect x="731" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="743" y="529" width="80" height="320" fill="#4a86c8" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="831" y="529" width="80" height="320" fill="#4c5d6b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="731" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="743" y="882" width="80" height="320" fill="#4c5d6b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="831" y="882" width="80" height="320" fill="#726b5c" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="719" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="956" y="248" width="213" height="30" fill="#4a9d5b"/>
+          <text x="1062.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">BETTY</text>
+          <rect x="956" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="956" y="286" width="213" height="210" fill="#f6f3ec" stroke="#7d766a" stroke-width="1.5"/>
+          <rect x="956" y="286" width="213" height="26" fill="#eae4d6" stroke="#7d766a" stroke-width="1.5"/>
+          <text x="966" y="305" font-family="IBM Plex Mono" font-size="19" fill="#2b2822">KK151</text>
+          <rect x="956" y="396" width="213" height="100" fill="#4a9d5b" opacity=".9"/>
+          <rect x="956" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="968" y="529" width="80" height="320" fill="#4a9d5b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1056" y="529" width="80" height="320" fill="#726b5c" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="956" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="968" y="882" width="80" height="320" fill="#726b5c" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1056" y="882" width="80" height="320" fill="#5d6470" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="944" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="1181" y="248" width="213" height="30" fill="#4a9d5b"/>
+          <text x="1287.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">SABELLA</text>
+          <rect x="1181" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="1181" y="396" width="213" height="100" fill="#4a9d5b" opacity=".9"/>
+          <rect x="1181" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="1193" y="529" width="80" height="320" fill="#4a9d5b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1281" y="529" width="80" height="320" fill="#5d6470" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1181" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="1193" y="882" width="80" height="320" fill="#5d6470" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1281" y="882" width="80" height="320" fill="#6e7178" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1169" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="1406" y="248" width="213" height="30" fill="#4a9d5b"/>
+          <text x="1512.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">KIDAN</text>
+          <rect x="1406" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="1406" y="286" width="213" height="210" fill="#f6f3ec" stroke="#7d766a" stroke-width="1.5"/>
+          <rect x="1406" y="286" width="213" height="26" fill="#eae4d6" stroke="#7d766a" stroke-width="1.5"/>
+          <text x="1416" y="305" font-family="IBM Plex Mono" font-size="19" fill="#2b2822">KK145</text>
+          <rect x="1406" y="396" width="213" height="100" fill="#4a9d5b" opacity=".9"/>
+          <rect x="1406" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="1418" y="529" width="80" height="320" fill="#4a9d5b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1506" y="529" width="80" height="320" fill="#6e7178" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1406" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="1418" y="882" width="80" height="320" fill="#6e7178" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1506" y="882" width="80" height="320" fill="#8a5b4a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1394" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="1631" y="248" width="213" height="30" fill="#4a9d5b"/>
+          <text x="1737.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">GETACHEW</text>
+          <rect x="1631" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="1631" y="286" width="213" height="210" fill="#f6f3ec" stroke="#7d766a" stroke-width="1.5"/>
+          <rect x="1631" y="286" width="213" height="26" fill="#eae4d6" stroke="#7d766a" stroke-width="1.5"/>
+          <text x="1641" y="305" font-family="IBM Plex Mono" font-size="19" fill="#2b2822">KK142</text>
+          <rect x="1631" y="396" width="213" height="100" fill="#4a9d5b" opacity=".9"/>
+          <rect x="1631" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="1643" y="529" width="80" height="320" fill="#4a9d5b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1731" y="529" width="80" height="320" fill="#8a5b4a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1631" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="1643" y="882" width="80" height="320" fill="#8a5b4a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1731" y="882" width="80" height="320" fill="#4c5d6b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1619" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="1856" y="248" width="213" height="30" fill="#4a9d5b"/>
+          <text x="1962.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">YORDANOS</text>
+          <rect x="1856" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="1856" y="396" width="213" height="100" fill="#4a9d5b" opacity=".9"/>
+          <rect x="1856" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="1868" y="529" width="80" height="320" fill="#4a9d5b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1956" y="529" width="80" height="320" fill="#4c5d6b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1856" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="1868" y="882" width="80" height="320" fill="#4c5d6b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1956" y="882" width="80" height="320" fill="#726b5c" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="1844" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="2081" y="248" width="213" height="30" fill="#e0714a"/>
+          <text x="2187.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">LIU</text>
+          <rect x="2081" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="2081" y="286" width="213" height="210" fill="#f6f3ec" stroke="#7d766a" stroke-width="1.5"/>
+          <rect x="2081" y="286" width="213" height="26" fill="#eae4d6" stroke="#7d766a" stroke-width="1.5"/>
+          <text x="2091" y="305" font-family="IBM Plex Mono" font-size="19" fill="#2b2822">KK136</text>
+          <rect x="2081" y="396" width="213" height="100" fill="#e0714a" opacity=".9"/>
+          <rect x="2081" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="2093" y="529" width="80" height="320" fill="#e0714a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2181" y="529" width="80" height="320" fill="#726b5c" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2081" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="2093" y="882" width="80" height="320" fill="#726b5c" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2181" y="882" width="80" height="320" fill="#5d6470" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2069" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="2306" y="248" width="213" height="30" fill="#e0714a"/>
+          <text x="2412.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">AMHA</text>
+          <rect x="2306" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="2306" y="286" width="213" height="210" fill="#f6f3ec" stroke="#7d766a" stroke-width="1.5"/>
+          <rect x="2306" y="286" width="213" height="26" fill="#eae4d6" stroke="#7d766a" stroke-width="1.5"/>
+          <text x="2316" y="305" font-family="IBM Plex Mono" font-size="19" fill="#2b2822">KK133</text>
+          <rect x="2306" y="396" width="213" height="100" fill="#e0714a" opacity=".9"/>
+          <rect x="2306" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="2318" y="529" width="80" height="320" fill="#e0714a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2406" y="529" width="80" height="320" fill="#5d6470" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2306" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="2318" y="882" width="80" height="320" fill="#5d6470" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2406" y="882" width="80" height="320" fill="#6e7178" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2294" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="2531" y="248" width="213" height="30" fill="#e0714a"/>
+          <text x="2637.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">WEDE</text>
+          <rect x="2531" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="2531" y="286" width="213" height="210" fill="#f6f3ec" stroke="#7d766a" stroke-width="1.5"/>
+          <rect x="2531" y="286" width="213" height="26" fill="#eae4d6" stroke="#7d766a" stroke-width="1.5"/>
+          <text x="2541" y="305" font-family="IBM Plex Mono" font-size="19" fill="#2b2822">KK130</text>
+          <rect x="2531" y="396" width="213" height="100" fill="#e0714a" opacity=".9"/>
+          <rect x="2531" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="2543" y="529" width="80" height="320" fill="#e0714a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2631" y="529" width="80" height="320" fill="#6e7178" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2531" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="2543" y="882" width="80" height="320" fill="#6e7178" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2631" y="882" width="80" height="320" fill="#8a5b4a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2519" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="2756" y="248" width="213" height="30" fill="#e0475f"/>
+          <text x="2862.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">ELIAS</text>
+          <rect x="2756" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="2756" y="286" width="213" height="210" fill="#f6f3ec" stroke="#7d766a" stroke-width="1.5"/>
+          <rect x="2756" y="286" width="213" height="26" fill="#eae4d6" stroke="#7d766a" stroke-width="1.5"/>
+          <text x="2766" y="305" font-family="IBM Plex Mono" font-size="19" fill="#2b2822">KK127</text>
+          <rect x="2756" y="396" width="213" height="100" fill="#e0475f" opacity=".9"/>
+          <rect x="2756" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="2768" y="529" width="80" height="320" fill="#e0475f" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2856" y="529" width="80" height="320" fill="#8a5b4a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2756" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="2768" y="882" width="80" height="320" fill="#8a5b4a" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2856" y="882" width="80" height="320" fill="#4c5d6b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2744" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="2981" y="248" width="213" height="30" fill="#e0475f"/>
+          <text x="3087.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">ASHENAFI</text>
+          <rect x="2981" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="2981" y="396" width="213" height="100" fill="#e0475f" opacity=".9"/>
+          <rect x="2981" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="2993" y="529" width="80" height="320" fill="#e0475f" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="3081" y="529" width="80" height="320" fill="#4c5d6b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2981" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="2993" y="882" width="80" height="320" fill="#4c5d6b" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="3081" y="882" width="80" height="320" fill="#726b5c" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="2969" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="3206" y="248" width="213" height="30" fill="#e0475f"/>
+          <text x="3312.5" y="270" font-family="Karla" font-weight="700" font-size="22" text-anchor="middle" fill="#ffffff">ALEX</text>
+          <rect x="3206" y="278" width="213" height="218" fill="var(--card)"/>
+          <rect x="3206" y="286" width="213" height="210" fill="#f6f3ec" stroke="#7d766a" stroke-width="1.5"/>
+          <rect x="3206" y="286" width="213" height="26" fill="#eae4d6" stroke="#7d766a" stroke-width="1.5"/>
+          <text x="3216" y="305" font-family="IBM Plex Mono" font-size="19" fill="#2b2822">KK121</text>
+          <rect x="3206" y="396" width="213" height="100" fill="#e0475f" opacity=".9"/>
+          <rect x="3206" y="514" width="213" height="335" fill="var(--card)"/>
+          <rect x="3218" y="529" width="80" height="320" fill="#e0475f" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="3306" y="529" width="80" height="320" fill="#726b5c" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="3206" y="867" width="213" height="335" fill="var(--card)"/>
+          <rect x="3218" y="882" width="80" height="320" fill="#726b5c" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="3306" y="882" width="80" height="320" fill="#5d6470" stroke="#3c3730" stroke-width="1.5"/>
+          <rect x="3194" y="248" width="12" height="954" fill="var(--oak-d)"/>
+          <rect x="278" y="496" width="3144" height="18" fill="var(--oak)"/>
+          <rect x="278" y="849" width="3144" height="18" fill="var(--oak)"/>
+          <g stroke="currentColor" stroke-width="3" fill="none" font-family="IBM Plex Mono" font-size="40">
+            <line x1="260" y1="160" x2="3440" y2="160" marker-start="url(#a1)" marker-end="url(#a1)"/>
+            <text x="1850" y="140" text-anchor="middle" stroke="none" fill="currentColor">3180</text>
+            <line x1="180" y1="230" x2="180" y2="1320" marker-start="url(#a1)" marker-end="url(#a1)"/>
+            <text x="150" y="775" text-anchor="middle" stroke="none" fill="currentColor" transform="rotate(-90 150 775)">1090 FROM FLOOR</text>
+            <line x1="281" y1="180" x2="494" y2="180" marker-start="url(#a1)" marker-end="url(#a1)"/>
+            <text x="387.5" y="164" text-anchor="middle" stroke="none" fill="currentColor" font-size="34">213</text>
+            <line x1="3500" y1="278" x2="3500" y2="496" marker-start="url(#a1)" marker-end="url(#a1)"/>
+            <text x="3540" y="387" text-anchor="middle" stroke="none" fill="currentColor" font-size="32" transform="rotate(-90 3540 387)">218 CARD</text>
+            <line x1="3500" y1="514" x2="3500" y2="849" marker-start="url(#a1)" marker-end="url(#a1)"/>
+            <text x="3540" y="681.5" text-anchor="middle" stroke="none" fill="currentColor" font-size="32" transform="rotate(-90 3540 681.5)">335 BOX</text>
+            <line x1="3500" y1="867" x2="3500" y2="1202" marker-start="url(#a1)" marker-end="url(#a1)"/>
+            <text x="3540" y="1034.5" text-anchor="middle" stroke="none" fill="currentColor" font-size="32" transform="rotate(-90 3540 1034.5)">335 BOX</text>
+            <line x1="3500" y1="1220" x2="3500" y2="1320" marker-start="url(#a1)" marker-end="url(#a1)"/>
+            <text x="3540" y="1270" text-anchor="middle" stroke="none" fill="currentColor" font-size="32" transform="rotate(-90 3540 1270)">100</text>
+          </g>
+          <g font-family="Karla" font-weight="700" font-size="34" fill="currentColor" opacity=".55">
+            <text x="1850" y="110" text-anchor="middle">TOP AT 1090 &mdash; SIGN THE CARD HERE</text>
+          </g>
+        </svg>
+      <figcaption><b>Front elevation, 1:25.</b> Fourteen bays at 225 pitch on a 100 plinth. Every bay identical.</figcaption>
+    </figure>
+    <figure style="margin-top:34px;max-width:760px;">
+      <svg class="dwg" viewBox="0 0 1200 1240" role="img" aria-label="Section through one bay: the job card leans back at 42 degrees in a 218 pocket, with two rows of box files standing below and a 100 plinth at the floor.">
+          <defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="currentColor"/></marker></defs>
+          <rect x="300" y="120" width="320" height="18" fill="var(--oak)" stroke="currentColor" stroke-width="2"/>
+          <rect x="300" y="120" width="12" height="852" fill="var(--oak-d)" stroke="currentColor" stroke-width="2"/>
+          <rect x="312" y="386" width="308" height="18" fill="var(--oak)" stroke="currentColor" stroke-width="2"/>
+          <rect x="312" y="739" width="308" height="18" fill="var(--oak)" stroke="currentColor" stroke-width="2"/>
+          <rect x="312" y="1092" width="308" height="18" fill="var(--oak)" stroke="currentColor" stroke-width="2"/>
+          <rect x="360" y="1110" width="210" height="100" fill="var(--char)"/>
+          <line x1="330" y1="386" x2="530" y2="166" stroke="#4a463f" stroke-width="6"/>
+          <line x1="340" y1="386" x2="540" y2="166" stroke="#7d766a" stroke-width="4"/>
+          <rect x="520" y="286" width="16" height="100" fill="var(--char)"/>
+          <rect x="322" y="404" width="285" height="320" fill="#4a9d5b" stroke="#3c3730" stroke-width="2" transform="rotate(-90 322 404)" opacity="0"/>
+          <rect x="322" y="419" width="285" height="320" fill="none"/>
+          <rect x="322" y="419" width="285" height="320" fill="#4a9d5b" stroke="#3c3730" stroke-width="2" opacity="0"/>
+          <rect x="322" y="419" width="285" height="320" fill="none"/>
+          <rect x="322" y="404" width="285" height="335" fill="#4a9d5b" opacity=".85" stroke="#3c3730" stroke-width="2"/>
+          <rect x="322" y="757" width="285" height="335" fill="#6e7178" opacity=".85" stroke="#3c3730" stroke-width="2"/>
+          <g stroke="currentColor" stroke-width="2.5" fill="none" font-family="IBM Plex Mono" font-size="28">
+            <line x1="300" y1="80" x2="620" y2="80" marker-start="url(#a3)" marker-end="url(#a3)"/>
+            <text x="460" y="62" text-anchor="middle" stroke="none" fill="currentColor">320 DEEP</text>
+            <line x1="700" y1="166" x2="700" y2="386" marker-start="url(#a3)" marker-end="url(#a3)"/>
+            <text x="724" y="286" stroke="none" fill="currentColor" font-size="26">218</text>
+            <line x1="700" y1="404" x2="700" y2="739" marker-start="url(#a3)" marker-end="url(#a3)"/>
+            <text x="724" y="580" stroke="none" fill="currentColor" font-size="26">335</text>
+            <line x1="700" y1="757" x2="700" y2="1092" marker-start="url(#a3)" marker-end="url(#a3)"/>
+            <text x="724" y="930" stroke="none" fill="currentColor" font-size="26">335</text>
+            <line x1="700" y1="1110" x2="700" y2="1210" marker-start="url(#a3)" marker-end="url(#a3)"/>
+            <text x="724" y="1170" stroke="none" fill="currentColor" font-size="26">100</text>
+          </g>
+          <line x1="120" y1="1210" x2="1080" y2="1210" stroke="currentColor" stroke-width="4"/>
+          <g font-family="Karla" font-size="27" fill="currentColor">
+            <text x="790" y="200" font-weight="700">THE CARD LEANS BACK</text>
+            <text x="790" y="242" opacity=".7">42&deg; off vertical. An A4 card is 297,</text>
+            <text x="790" y="278" opacity=".7">leaning it takes only 220 of height.</text>
+            <text x="790" y="314" opacity=".7">That is how the card survives a</text>
+            <text x="790" y="350" opacity=".7">1090 cabinet with four box files in it.</text>
+            <text x="790" y="430" font-weight="700">100 CHARCOAL LIP</text>
+            <text x="790" y="472" opacity=".7">Holds the stack, carries nothing else.</text>
+            <text x="790" y="552" font-weight="700">TOP IS A WORK SURFACE</text>
+            <text x="790" y="594" opacity=".7">1090 from the floor, 320 deep, 3.18 m</text>
+            <text x="790" y="630" opacity=".7">long. Sign the card where you took it.</text>
+          </g>
+        </svg>
+      <figcaption><b>Section through one bay, 1:5.</b> The leaning card is the whole trick.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>BUILD</h2>
+      <p>One box on a plinth, thirteen dividers, two shelves.</p>
+    </div>
+    <div class="build">
+      <div class="tw">
+        <table>
+          <thead><tr><th>Part</th><th class="n">Qty</th><th class="n">L</th><th class="n">W</th><th>Material</th></tr></thead>
+          <tbody>
+            <tr><td>Side</td><td class="n">2</td><td class="n">972</td><td class="n">320</td><td>18 MFC</td></tr>
+            <tr><td>Top</td><td class="n">1</td><td class="n">3180</td><td class="n">320</td><td>18 MFC, banded 3 edges</td></tr>
+            <tr><td>Bottom</td><td class="n">1</td><td class="n">3144</td><td class="n">320</td><td>18 MFC</td></tr>
+            <tr><td>Shelf, full width</td><td class="n">2</td><td class="n">3144</td><td class="n">320</td><td>18 MFC</td></tr>
+            <tr><td>Bay divider, full height</td><td class="n">13</td><td class="n">936</td><td class="n">298</td><td>12 MFC</td></tr>
+            <tr><td>Name plate band</td><td class="n">1</td><td class="n">3144</td><td class="n">30</td><td>18 MDF, charcoal</td></tr>
+            <tr><td>Card lip</td><td class="n">14</td><td class="n">213</td><td class="n">100</td><td>12 MDF, charcoal</td></tr>
+            <tr><td>Plinth front / back</td><td class="n">2</td><td class="n">3060</td><td class="n">100</td><td>18 MDF, charcoal</td></tr>
+            <tr><td>Plinth rail</td><td class="n">4</td><td class="n">264</td><td class="n">100</td><td>18 MDF</td></tr>
+            <tr><td>Back panel, 3 pieces</td><td class="n">3</td><td class="n">972</td><td class="n">1060</td><td>12 MDF, charcoal face</td></tr>
+            <tr><td>Anti-tip bracket</td><td class="n">2</td><td class="n">120</td><td class="n">60</td><td>steel angle</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <ul class="buy">
+          <li><b>4 sheets</b><span>18 mm melamine MDF, light oak, <strong>matte</strong></span></li>
+          <li><b>3 sheets</b><span>12 mm MDF &mdash; one face charcoal</span></li>
+          <li><b>30 m</b><span>2 mm ABS in the same oak d&eacute;cor</span></li>
+          <li><b>56</b><span>A4 box files &mdash; four per person</span></li>
+          <li><b>1 set</b><span>12 V LED strip 3000 K, 3100 mm + driver</span></li>
+          <li><b>2</b><span>steel anti-tip brackets + wall plugs</span></li>
+        </ul>
+
+        <h3 class="sub">FIVE THINGS THAT MATTER</h3>
+        <ol class="steps">
+          <li>The top is the work surface &mdash; band it on three edges and use a full 3180 piece, not a joint. It is the one part people will touch every day.</li>
+          <li>213 clear per bay is the whole design. An A4 card is 210 &mdash; cut the dividers on a stop block so no bay ends up 208.</li>
+          <li>Both shelves carry box weight. Screw into every divider, not just the ends.</li>
+          <li>Level the plinth before anything else. A 3.18 m cabinet shows a twisted floor immediately.</li>
+          <li>Two anti-tip brackets into the wall. Loaded with 56 box files this carries about 140 kg of paper.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="note">
+      <p><strong>Standing room:</strong> leave 900 in front of it. People will be pulling A4 boxes out at 400 and reading cards at 1000 in the same movement.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Klever &middot; DWG KL-JB-01 &middot; Rev 11</span>
+    <span>3180 &times; 1090 &times; 320 &middot; floor standing &middot; light oak MFC</span>
+    <span>14 bays &middot; 56 box files &middot; 14 card pockets</span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  var stage = document.getElementById('stage');
+  var canvas = document.getElementById('view');
+
+  function boot(){
+    if (!window.THREE){ stage.classList.add('failed'); return; }
+    try { build(); } catch(e){ stage.classList.add('failed'); }
+  }
+  if (window.THREE){ boot(); }
+  else {
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js';
+    s.onload = boot;
+    s.onerror = function(){ stage.classList.add('failed'); };
+    document.head.appendChild(s);
+  }
+
+  /* ---------- procedural textures ---------- */
+  function woodTexture(){
+    var c = document.createElement('canvas'); c.width = 1024; c.height = 1024;
+    var g = c.getContext('2d');
+    g.fillStyle = '#d5ab74'; g.fillRect(0,0,1024,1024);
+    var i, y, k, amp, freq, off;
+    for (i=0;i<260;i++){
+      y = Math.random()*1024;
+      amp = 2 + Math.random()*9;
+      freq = 0.004 + Math.random()*0.010;
+      off = Math.random()*6.28;
+      g.strokeStyle = 'rgba(' + (128+Math.random()*40|0) + ',' + (92+Math.random()*30|0) + ',' + (52+Math.random()*24|0) + ',' + (0.05 + Math.random()*0.16).toFixed(3) + ')';
+      g.lineWidth = 0.6 + Math.random()*2.4;
+      g.beginPath();
+      for (k=0;k<=1024;k+=8){
+        var yy = y + Math.sin(k*freq + off)*amp;
+        if (k===0) g.moveTo(k,yy); else g.lineTo(k,yy);
+      }
+      g.stroke();
+    }
+    for (i=0;i<7;i++){
+      var cx = Math.random()*1024, cy = Math.random()*1024;
+      for (k=1;k<9;k++){
+        g.strokeStyle = 'rgba(126,90,48,' + (0.10 - k*0.009).toFixed(3) + ')';
+        g.lineWidth = 1.4;
+        g.beginPath();
+        g.ellipse(cx, cy, k*5.5, k*2.6, Math.random()*0.4, 0, 6.283);
+        g.stroke();
+      }
+    }
+    var t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    if (THREE.sRGBEncoding) t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  function textTexture(w,h,bg,fg,items,size,track){
+    var c = document.createElement('canvas'); c.width = w; c.height = h;
+    var g = c.getContext('2d');
+    g.fillStyle = bg; g.fillRect(0,0,w,h);
+    g.fillStyle = fg;
+    g.textBaseline = 'middle';
+    g.font = '700 ' + size + 'px Karla, Arial, sans-serif';
+    for (var i=0;i<items.length;i++){
+      var it = items[i], x = it.x, str = it.t, j;
+      for (j=0;j<str.length;j++){
+        g.fillText(str[j], x, h/2);
+        x += g.measureText(str[j]).width + track;
+      }
+    }
+    var t = new THREE.CanvasTexture(c);
+    if (THREE.sRGBEncoding) t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  function cardTexture(){
+    /* The face of the card in the bays is the Klever Job Card:
+       charcoal header, LEAD ID + JOB CODE chips, the four-colour stripe,
+       and the Stage Tracker in its four bands, 16 stages, same order as print. */
+    var W = 512, H = 724;                 /* A4 portrait, 2.44 px per mm */
+    var c = document.createElement('canvas'); c.width = W; c.height = H;
+    var g = c.getContext('2d');
+
+    var Z     = ['#4a86c8','#4a9d5b','#e0714a','#e0475f'];
+    var CHAR  = '#4f4f4f', LABEL = '#a9a59c', RULE = '#c4c0b6', INK = '#2b2b2b';
+    var L = 22, CW = W - 44, R = L + CW;
+    var i, b, r, y;
+
+    g.fillStyle = '#f7f4ed'; g.fillRect(0, 0, W, H);
+
+    function font(size, weight){ g.font = weight + ' ' + size + 'px Karla, Arial, Helvetica, sans-serif'; }
+    function trackW(str, size, weight, tr){
+      font(size, weight); var w = 0;
+      for (var k = 0; k < str.length; k++){ w += g.measureText(str.charAt(k)).width + tr; }
+      return w - tr;
+    }
+    function track(str, x, y, size, weight, fill, tr){
+      g.fillStyle = fill; font(size, weight);
+      for (var k = 0; k < str.length; k++){
+        g.fillText(str.charAt(k), x, y); x += g.measureText(str.charAt(k)).width + tr;
+      }
+      return x;
+    }
+    function bar(x, y, w, h, col){ g.fillStyle = col; g.fillRect(x, y, w, h); }
+    function sechead(num, text, yy){
+      bar(L, yy - 9, 11, 11, CHAR);
+      g.fillStyle = '#ffffff'; font(8, '700'); g.fillText(num, L + 3.4, yy - 0.6);
+      track(text, L + 18, yy, 9.5, '800', INK, 1.3);
+    }
+    function fields(yy, parts){
+      var x = L, gap = 10, total = CW - gap * (parts.length - 1), w;
+      for (var k = 0; k < parts.length; k++){
+        w = total * parts[k];
+        bar(x, yy, Math.min(w * 0.55, 34), 2, LABEL);   /* micro label */
+        bar(x, yy + 13, w, 1, RULE);                    /* write-on rule */
+        x += w + gap;
+      }
+    }
+
+    /* ---------- header ---------- */
+    var hy = 20, hh = 58;
+    bar(L, hy, CW, hh, CHAR);
+    track('KLEVER', L + 12, hy + 17, 8, '700', 'rgba(255,255,255,.85)', 3.4);
+    g.fillStyle = '#ffffff'; font(21, '800'); g.fillText('JOB CARD', L + 11, hy + 41);
+    track('ONE CARD PER JOB', L + 12, hy + 52, 6, '700', 'rgba(255,255,255,.72)', 1.8);
+
+    var chipW = 78, chipH = 34, chipY = hy + 12, chips = ['LEAD ID', 'JOB CODE'];
+    for (i = 0; i < 2; i++){
+      var cx = R - 12 - (2 - i) * chipW - (1 - i) * 8;
+      bar(cx, chipY, chipW, chipH, '#ffffff');
+      track(chips[i], cx + 6, chipY + 11, 6, '700', '#8c8c8c', 1.6);
+      bar(cx + 6, chipY + 26, chipW - 12, 1, '#b9b9b9');
+    }
+    for (i = 0; i < 4; i++){ bar(L + i * (CW / 4), hy + hh, CW / 4, 6, Z[i]); }
+
+    /* ---------- 1  customer & order ---------- */
+    sechead('1', 'CUSTOMER & ORDER', 98);
+    fields(106, [0.34, 0.33, 0.33]);
+    fields(128, [0.50, 0.25, 0.25]);
+    fields(150, [0.34, 0.33, 0.33]);
+
+    track('WHAT THEY ORDERED', L, 180, 6, '700', LABEL, 1.6);
+    for (r = 0; r < 2; r++){
+      for (i = 0; i < 4; i++){
+        var tx = L + i * (CW / 4), ty = 186 + r * 14;
+        g.strokeStyle = '#9d9d9d'; g.lineWidth = 1;
+        g.strokeRect(tx + 0.5, ty + 0.5, 8, 8);
+        bar(tx + 13, ty + 3, 46 + ((i + r) % 3) * 9, 3, INK);
+      }
+    }
+
+    /* ---------- 2  commercial ---------- */
+    sechead('2', 'COMMERCIAL', 230);
+    fields(238, [0.34, 0.33, 0.33]);
+    fields(260, [0.34, 0.33, 0.33]);
+
+    /* ---------- 3  stage tracker ---------- */
+    sechead('3', 'STAGE TRACKER', 296);
+    bar(L + 18, 304, 40, 2, LABEL);
+    bar(L + 140, 304, 28, 2, LABEL);
+    bar(L + 186, 304, 22, 2, LABEL);
+    bar(L + 290, 304, 34, 2, LABEL);
+
+    var BANDS = [
+      { t: 'COMMERCIAL',             n: 'STAGES 1\u20135',   c: 0, rows: 5, from: 1  },
+      { t: 'FINANCE & PROCUREMENT',  n: 'STAGES 6\u20139',   c: 1, rows: 4, from: 6  },
+      { t: 'PRODUCTION',             n: 'STAGES 10\u201312', c: 2, rows: 3, from: 10 },
+      { t: 'DELIVERY & AFTER-SALES', n: 'STAGES 13\u201316', c: 3, rows: 4, from: 13 }
+    ];
+    /* one width per stage name, longest = FINAL PAYMENT REQUESTED */
+    var NAMEW = [46, 76, 98, 92, 90, 94, 96, 112, 108, 102, 110, 68, 96, 104, 100, 110];
+
+    y = 310;
+    for (b = 0; b < 4; b++){
+      var B = BANDS[b];
+      bar(L, y, CW, 13, Z[B.c]);
+      track(B.t, L + 6, y + 9.2, 7, '800', '#ffffff', 1.5);
+      track(B.n, R - 6 - trackW(B.n, 6, '700', 1.4), y + 9.0, 6, '700', 'rgba(255,255,255,.85)', 1.4);
+      y += 13;
+      for (r = 0; r < B.rows; r++){
+        var num = B.from + r;
+        if (r % 2 === 1){ bar(L, y, CW, 15, 'rgba(0,0,0,.035)'); }
+        bar(L + 4, y + 3, 9, 9, Z[B.c]);
+        g.fillStyle = '#ffffff'; font(6.5, '700');
+        g.fillText(String(num), L + 6.2 - (num > 9 ? 1.7 : 0), y + 10);
+        bar(L + 18,  y + 6,  NAMEW[num - 1], 3, INK);        /* stage name  */
+        bar(L + 140, y + 6,  34, 3, Z[B.c]);                 /* moved by    */
+        bar(L + 186, y + 11, 96, 1, RULE);                   /* date        */
+        bar(L + 290, y + 11, CW - 294, 1, RULE);             /* signature   */
+        y += 15;
+      }
+      y += 5;
+    }
+
+    /* ---------- hard stops ---------- */
+    y += 6;
+    bar(L, y, CW, 46, 'rgba(0,0,0,.045)');
+    bar(L, y, 3, 46, Z[3]);
+    track('HARD STOPS', L + 10, y + 15, 7.5, '800', INK, 1.5);
+    bar(L + 10, y + 24, CW - 34, 2.5, LABEL);
+    bar(L + 10, y + 32, CW - 96, 2.5, LABEL);
+    bar(L + 10, y + 40, CW - 150, 2.5, LABEL);
+
+    bar(L, 692, CW, 1, RULE);
+    bar(L, 698, 52, 2, LABEL);
+
+    var t = new THREE.CanvasTexture(c);
+    t.anisotropy = 8;
+    if (THREE.sRGBEncoding) t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  /* ---------- scene ---------- */
+  function build(){
+    var W = 3.180, H = 1.090, D = 0.320;
+    var PL = 0.100, t = 0.018, back = 0.012;
+
+    var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true});
+    renderer.setClearColor(0x0d0c0b, 1);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
+    if (THREE.ACESFilmicToneMapping){ renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05; }
+
+    var scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x0d0c0b, 7, 17);
+    var camera = new THREE.PerspectiveCamera(34, 2, 0.05, 60);
+
+    var wood = woodTexture();
+    var woodV = wood.clone(); woodV.needsUpdate = true; woodV.repeat.set(0.6, 2.2);
+    var oak   = new THREE.MeshStandardMaterial({map:wood,  roughness:0.58, metalness:0.0});
+    var oakV  = new THREE.MeshStandardMaterial({map:woodV, roughness:0.58, metalness:0.0});
+    var char  = new THREE.MeshStandardMaterial({color:0x2c2925, roughness:0.92});
+    var glow  = new THREE.MeshBasicMaterial({color:0xffe1b0, transparent:true, opacity:0.75});
+
+    var cardTex = cardTexture();
+    var cardFace = new THREE.MeshStandardMaterial({map:cardTex, roughness:0.94});
+    var cardEdge = new THREE.MeshStandardMaterial({color:0xece7dc, roughness:0.95});
+    var cardMats = [cardEdge,cardEdge,cardEdge,cardEdge,cardFace,cardEdge];
+
+    var root = new THREE.Group();
+    scene.add(root);
+
+    function box(w,h,d,mat,x,y,z,shadow){
+      var m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat);
+      m.position.set(x,y,z);
+      m.castShadow = shadow !== false;
+      m.receiveShadow = true;
+      root.add(m);
+      return m;
+    }
+
+    var TOP = H;                        /* 1.090 */
+    var yBox2 = PL + t;                 /* 0.118 */
+    var ySh2  = yBox2 + 0.335;          /* 0.453 */
+    var yBox1 = ySh2 + t;               /* 0.471 */
+    var ySh1  = yBox1 + 0.335;          /* 0.806 */
+    var yCard = ySh1 + t;               /* 0.824 */
+    var yName = yCard + 0.218;          /* 1.042 */
+    var IW = W - 2*t, bay = 0.213, dv = 0.012, pitch = bay + dv;
+    var xL = -W/2 + t + 0.003;
+    var inD = D - back - 0.010;
+    var CH = TOP - PL;
+
+    box(t, CH - t, D, oakV, -W/2 + t/2, PL + (CH - t)/2, D/2);
+    box(t, CH - t, D, oakV,  W/2 - t/2, PL + (CH - t)/2, D/2);
+    box(W, t, D, oak, 0, TOP - t/2, D/2);
+    box(IW, t, D, oak, 0, PL + t/2, D/2);
+    box(W, CH, back, char, 0, PL + CH/2, back/2, false);
+    box(W - 0.120, PL, 0.270, char, 0, PL/2, 0.270/2, false);
+    box(IW, t, D, oak, 0, ySh2 + t/2, D/2);
+    box(IW, t, D, oak, 0, ySh1 + t/2, D/2);
+
+    var i, k;
+    for (i=1;i<14;i++){
+      box(dv, CH - 2*t, inD, oak, xL + i*pitch - dv/2, PL + CH/2, inD/2 + back, false);
+    }
+
+    var COLS = [0x7a7368,0x4a86c8,0x4a86c8,0x4a9d5b,0x4a9d5b,0x4a9d5b,0x4a9d5b,
+                0x4a9d5b,0xe0714a,0xe0714a,0xe0714a,0xe0475f,0xe0475f,0xe0475f];
+    var NAMES = ['EPHRATA','SALES','DESIGN','BETTY','SABELLA','KIDAN','GETACHEW',
+                 'YORDANOS','LIU','AMHA','WEDE','ELIAS','ASHENAFI','ALEX'];
+    var HASCARD = [1,1,1,1,0,1,1,0,1,1,1,1,0,1];
+    var boxPal = [0x6e7178,0x8a5b4a,0x4c5d6b,0x726b5c,0x5d6470];
+    var LEAN = 0.74;                    /* 42 degrees off vertical */
+
+    for (i=0;i<14;i++){
+      var cx = xL + i*pitch + bay/2;
+      var plate = new THREE.Mesh(
+        new THREE.BoxGeometry(bay, 0.030, 0.006),
+        [char,char,char,char,
+         new THREE.MeshStandardMaterial({
+           map: textTexture(512, 72, '#' + COLS[i].toString(16), '#ffffff', [{t:NAMES[i], x:16}], 34, 1.5),
+           roughness:0.8}), char]);
+      plate.position.set(cx, yName + 0.015, D - 0.004);
+      plate.castShadow = false; root.add(plate);
+
+      /* charcoal card lip */
+      box(bay, 0.100, 0.012, char, cx, yCard + 0.050, D - 0.020, false);
+
+      if (HASCARD[i]){
+        for (k=0;k<3;k++){
+          var cm = new THREE.Mesh(new THREE.BoxGeometry(0.205, 0.297, 0.0012), cardMats);
+          cm.rotation.x = -LEAN;
+          cm.position.set(cx, yCard + 0.110 - k*0.004, back + 0.115 + k*0.006);
+          cm.receiveShadow = true;
+          root.add(cm);
+        }
+      }
+      box(0.080, 0.320, 0.285,
+          new THREE.MeshStandardMaterial({color:COLS[i], roughness:0.86}),
+          cx - 0.050, yBox1 + 0.163, 0.285/2 + back + 0.010, false);
+      box(0.080, 0.320, 0.285,
+          new THREE.MeshStandardMaterial({color:boxPal[i % 5], roughness:0.86}),
+          cx + 0.040, yBox1 + 0.163, 0.285/2 + back + 0.010, false);
+      box(0.080, 0.320, 0.285,
+          new THREE.MeshStandardMaterial({color:boxPal[(i+2) % 5], roughness:0.86}),
+          cx - 0.050, yBox2 + 0.163, 0.285/2 + back + 0.010, false);
+      box(0.080, 0.320, 0.285,
+          new THREE.MeshStandardMaterial({color:boxPal[(i+3) % 5], roughness:0.86}),
+          cx + 0.040, yBox2 + 0.163, 0.285/2 + back + 0.010, false);
+    }
+
+    box(IW, 0.006, 0.004, glow, 0, TOP - t - 0.004, D - t - 0.006, false);
+    var led = new THREE.PointLight(0xffd9a0, 0.5, 3.2, 2);
+    led.position.set(0, TOP - 0.06, D - 0.05);
+    root.add(led);
+
+    /* ---- room ---- */
+    var floor = new THREE.Mesh(new THREE.PlaneGeometry(24,24),
+      new THREE.MeshStandardMaterial({color:0x2a2622, roughness:0.96}));
+    floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; scene.add(floor);
+    var wall = new THREE.Mesh(new THREE.PlaneGeometry(16,8),
+      new THREE.MeshStandardMaterial({color:0x4a443c, roughness:1}));
+    wall.position.set(0,4,-0.008); wall.receiveShadow = true; scene.add(wall);
+
+    scene.add(new THREE.HemisphereLight(0xfff0dc, 0x3a332a, 0.62));
+    var key = new THREE.DirectionalLight(0xfff0d6, 1.55);
+    key.position.set(1.5, 3.8, 4.6);
+    key.castShadow = true;
+    key.shadow.mapSize.width = key.shadow.mapSize.height = 2048;
+    key.shadow.camera.near = 0.5; key.shadow.camera.far = 14;
+    key.shadow.camera.left = -4; key.shadow.camera.right = 4;
+    key.shadow.camera.top = 4; key.shadow.camera.bottom = -1;
+    key.shadow.bias = -0.0009; key.shadow.radius = 7;
+    scene.add(key);
+    var fill = new THREE.DirectionalLight(0xbcd2f0, 0.62);
+    fill.position.set(-3.4, 2.0, 2.6); scene.add(fill);
+    var rim = new THREE.DirectionalLight(0xffd9a8, 0.35);
+    rim.position.set(-1.2, 1.4, -2.4); scene.add(rim);
+
+    /* ---- camera rig ---- */
+    var VIEWS = {
+      hero:  {az: 0.50, el: 0.22, r: 4.30, t:[0, 0.62, 0.15]},
+      front: {az: 0.00, el: 0.10, r: 4.10, t:[0, 0.60, 0.15]},
+      bay:   {az: 0.26, el: 0.10, r: 1.35, t:[-0.45, 0.72, 0.14]},
+      top:   {az: 0.34, el: 0.62, r: 1.90, t:[-0.20, 0.95, 0.16]}
+    };
+    var cur = {az:VIEWS.hero.az, el:VIEWS.hero.el, r:VIEWS.hero.r, t:VIEWS.hero.t.slice()};
+    var goal = {az:cur.az, el:cur.el, r:cur.r, t:cur.t.slice()};
+
+    function setView(name, btn){
+      var v = VIEWS[name]; if (!v) return;
+      goal.az = v.az; goal.el = v.el; goal.r = v.r; goal.t = v.t.slice();
+      var bs = stage.querySelectorAll('.views button');
+      for (var i=0;i<bs.length;i++) bs[i].setAttribute('aria-pressed', bs[i] === btn ? 'true' : 'false');
+    }
+    var buttons = stage.querySelectorAll('.views button');
+    for (i=0;i<buttons.length;i++){
+      (function(btn){
+        btn.addEventListener('click', function(){ setView(btn.getAttribute('data-v'), btn); });
+      })(buttons[i]);
+    }
+
+    var dragging = false, lastX = 0, lastY = 0;
+    canvas.addEventListener('pointerdown', function(e){
+      dragging = true; lastX = e.clientX; lastY = e.clientY;
+      canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener('pointermove', function(e){
+      if (!dragging) return;
+      goal.az -= (e.clientX - lastX) * 0.006;
+      goal.el += (e.clientY - lastY) * 0.004;
+      goal.az = Math.max(-1.15, Math.min(1.15, goal.az));
+      goal.el = Math.max(-0.42, Math.min(0.62, goal.el));
+      lastX = e.clientX; lastY = e.clientY;
+    });
+    function stop(e){ dragging = false; try{ canvas.releasePointerCapture(e.pointerId); }catch(_){} }
+    canvas.addEventListener('pointerup', stop);
+    canvas.addEventListener('pointercancel', stop);
+    canvas.addEventListener('wheel', function(e){
+      e.preventDefault();
+      goal.r = Math.max(1.05, Math.min(7.5, goal.r + e.deltaY * 0.0020));
+    }, {passive:false});
+
+    function resize(){
+      var w = canvas.clientWidth, h = canvas.clientHeight;
+      if (!w || !h) return;
+      renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    var target = new THREE.Vector3();
+    function tick(){
+      cur.az += (goal.az - cur.az) * 0.12;
+      cur.el += (goal.el - cur.el) * 0.12;
+      cur.r  += (goal.r  - cur.r ) * 0.12;
+      for (var i=0;i<3;i++) cur.t[i] += (goal.t[i] - cur.t[i]) * 0.12;
+      target.set(cur.t[0], cur.t[1], cur.t[2]);
+      camera.position.set(
+        target.x + cur.r * Math.cos(cur.el) * Math.sin(cur.az),
+        target.y + cur.r * Math.sin(cur.el),
+        target.z + cur.r * Math.cos(cur.el) * Math.cos(cur.az)
+      );
+      camera.lookAt(target);
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    tick();
+  }
+})();
+</script>

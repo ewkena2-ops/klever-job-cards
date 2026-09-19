@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Klever Kanban Board Labels</title>
+<style>
+  @page { size: A4 portrait; margin: 12mm 12mm 13mm; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{
+    font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
+    background:#fff; color:#2b2b2b;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .sheet{
+    width:186mm; display:flex; flex-wrap:wrap; gap:4mm 6mm;
+    page-break-after:always; break-after:page;
+  }
+  .sheet:last-child{ page-break-after:auto; break-after:auto; }
+
+  .cut{ width:90mm; height:64mm; outline:.25mm dashed #d9d5cc; outline-offset:1.6mm; }
+
+  .lab{
+    width:100%; height:100%;
+    background:var(--tint);
+    border:.45mm solid var(--edge);
+    border-radius:2.4mm;
+    overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+
+  .top{
+    background:var(--accent); color:#fff;
+    height:13mm; flex:none;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 5mm 0 3.4mm;
+  }
+  .num{
+    width:9.2mm; height:9.2mm; border-radius:50%;
+    background:#fff; color:var(--accent);
+    font-weight:700; letter-spacing:-.02em;
+    display:flex; align-items:center; justify-content:center;
+    flex:none;
+  }
+  .num.wide{
+    width:auto; min-width:13mm; border-radius:4.6mm;
+    padding:0 2.6mm; letter-spacing:.14em;
+  }
+  .zone{ font-size:7.5pt; font-weight:700; letter-spacing:.16em; }
+
+  .mid{
+    flex:1; display:flex; flex-direction:column; justify-content:center;
+    padding:3mm 5mm 0;
+  }
+  .name{
+    color:var(--dark); font-weight:700;
+    line-height:1.04; letter-spacing:-.005em;
+    overflow-wrap:normal; word-break:normal; hyphens:none;
+  }
+  .name .nb{ white-space:nowrap; }
+  .who{
+    margin-top:3.2mm; font-size:9.5pt; font-weight:700; color:var(--dark);
+  }
+  .who b{
+    display:block; font-size:6pt; letter-spacing:.2em; font-weight:700;
+    color:var(--accent); margin-bottom:.9mm;
+  }
+
+  .foot{
+    background:var(--accent); color:#fff;
+    height:6.5mm; flex:none;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 5mm 0 3.6mm;
+    font-size:6pt; font-weight:700; letter-spacing:.2em;
+  }
+  .foot span:last-child{ opacity:.82; letter-spacing:.14em; }
+</style></head><body>
+<div class="sheet">
+<div class="cut">
+  <div class="lab" style="--accent:#4a86c8;--dark:#1c3454;--tint:#eef3fa;--edge:#c3d6ec">
+    <div class="top">
+      <span class="num" style="font-size:15pt">1</span>
+      <span class="zone">COMMERCIAL</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:27pt">LEAD</div>
+      <div class="who"><b>MOVED BY</b>Salesperson</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 1 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#4a86c8;--dark:#1c3454;--tint:#eef3fa;--edge:#c3d6ec">
+    <div class="top">
+      <span class="num" style="font-size:15pt">2</span>
+      <span class="zone">COMMERCIAL</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:21pt">ADVANCE PAID</div>
+      <div class="who"><b>MOVED BY</b>Betty</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 2 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#4a86c8;--dark:#1c3454;--tint:#eef3fa;--edge:#c3d6ec">
+    <div class="top">
+      <span class="num" style="font-size:15pt">3</span>
+      <span class="zone">COMMERCIAL</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:21pt">FINAL MEASUREMENT</div>
+      <div class="who"><b>MOVED BY</b>Designer</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 3 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#4a86c8;--dark:#1c3454;--tint:#eef3fa;--edge:#c3d6ec">
+    <div class="top">
+      <span class="num" style="font-size:15pt">4</span>
+      <span class="zone">COMMERCIAL</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:18.5pt">MATERIAL SELECTION</div>
+      <div class="who"><b>MOVED BY</b>Designer</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 4 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#4a86c8;--dark:#1c3454;--tint:#eef3fa;--edge:#c3d6ec">
+    <div class="top">
+      <span class="num" style="font-size:15pt">5</span>
+      <span class="zone">COMMERCIAL</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:21pt">PURCHASE APPROVAL</div>
+      <div class="who"><b>MOVED BY</b>Ephrata</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 5 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#4a9d5b;--dark:#1b3a22;--tint:#eef6f0;--edge:#c4e0cc">
+    <div class="top">
+      <span class="num" style="font-size:15pt">6</span>
+      <span class="zone">FINANCE &amp; PROCUREMENT</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:21pt">MATERIALS ORDERED</div>
+      <div class="who"><b>MOVED BY</b>Getachew</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 6 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#4a9d5b;--dark:#1b3a22;--tint:#eef6f0;--edge:#c4e0cc">
+    <div class="top">
+      <span class="num" style="font-size:15pt">7</span>
+      <span class="zone">FINANCE &amp; PROCUREMENT</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:18.5pt">MATERIALS RECEIVED</div>
+      <div class="who"><b>MOVED BY</b>Yordanos</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 7 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#4a9d5b;--dark:#1b3a22;--tint:#eef6f0;--edge:#c4e0cc">
+    <div class="top">
+      <span class="num" style="font-size:15pt">8</span>
+      <span class="zone">FINANCE &amp; PROCUREMENT</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:17pt">FINAL PAYMENT REQUESTED</div>
+      <div class="who"><b>MOVED BY</b>Betty</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 8 OF 16</span></div>
+  </div>
+</div>
+</div>
+<div class="sheet">
+<div class="cut">
+  <div class="lab" style="--accent:#4a9d5b;--dark:#1b3a22;--tint:#eef6f0;--edge:#c4e0cc">
+    <div class="top">
+      <span class="num" style="font-size:15pt">9</span>
+      <span class="zone">FINANCE &amp; PROCUREMENT</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:17pt">FINAL PAYMENT RECEIVED</div>
+      <div class="who"><b>MOVED BY</b>Betty</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 9 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#e0714a;--dark:#5a2513;--tint:#fdf2ec;--edge:#f5cdbd">
+    <div class="top">
+      <span class="num" style="font-size:13pt">10</span>
+      <span class="zone">PRODUCTION</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:18.5pt">PRODUCTION APPROVED</div>
+      <div class="who"><b>MOVED BY</b>Liu</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 10 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#e0714a;--dark:#5a2513;--tint:#fdf2ec;--edge:#f5cdbd">
+    <div class="top">
+      <span class="num" style="font-size:13pt">11</span>
+      <span class="zone">PRODUCTION</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:18.5pt">PRODUCTION COMPLETED</div>
+      <div class="who"><b>MOVED BY</b>Amha</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 11 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#e0714a;--dark:#5a2513;--tint:#fdf2ec;--edge:#f5cdbd">
+    <div class="top">
+      <span class="num" style="font-size:13pt">12</span>
+      <span class="zone">PRODUCTION</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:27pt">QC RELEASED</div>
+      <div class="who"><b>MOVED BY</b>Wede</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 12 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#e0475f;--dark:#56141f;--tint:#fdeef1;--edge:#f6c4cd">
+    <div class="top">
+      <span class="num" style="font-size:13pt">13</span>
+      <span class="zone">DELIVERY &amp; AFTER-SALES</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:18.5pt">READY FOR DELIVERY</div>
+      <div class="who"><b>MOVED BY</b>Betty</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 13 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#e0475f;--dark:#56141f;--tint:#fdeef1;--edge:#f6c4cd">
+    <div class="top">
+      <span class="num" style="font-size:13pt">14</span>
+      <span class="zone">DELIVERY &amp; AFTER-SALES</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:18.5pt">DELIVERED / INSTALLED</div>
+      <div class="who"><b>MOVED BY</b>Elias</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 14 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#e0475f;--dark:#56141f;--tint:#fdeef1;--edge:#f6c4cd">
+    <div class="top">
+      <span class="num" style="font-size:13pt">15</span>
+      <span class="zone">DELIVERY &amp; AFTER-SALES</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:18.5pt">CUSTOMER ACCEPTANCE</div>
+      <div class="who"><b>MOVED BY</b>Elias</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 15 OF 16</span></div>
+  </div>
+</div>
+<div class="cut">
+  <div class="lab" style="--accent:#e0475f;--dark:#56141f;--tint:#fdeef1;--edge:#f6c4cd">
+    <div class="top">
+      <span class="num" style="font-size:13pt">16</span>
+      <span class="zone">DELIVERY &amp; AFTER-SALES</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:18.5pt"><span class="nb">AFTER-SALES</span> <span class="nb">FOLLOW-UP</span></div>
+      <div class="who"><b>MOVED BY</b>Salesperson</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>STAGE 16 OF 16</span></div>
+  </div>
+</div>
+</div>
+<div class="sheet">
+<div class="cut">
+  <div class="lab" style="--accent:#7a7368;--dark:#2e2b26;--tint:#f4f3f0;--edge:#d8d4cb">
+    <div class="top">
+      <span class="num wide" style="font-size:9pt">HOLD</span>
+      <span class="zone">NOT A STAGE</span>
+    </div>
+    <div class="mid">
+      <div class="name" style="font-size:21pt">HOLD / BLOCKED</div>
+      <div class="who"><b>MOVED BY</b>Ephrata only</div>
+    </div>
+    <div class="foot"><span>KLEVER JOB BOARD</span><span>FLAG ONLY</span></div>
+  </div>
+</div>
+</div>
+</body></html>

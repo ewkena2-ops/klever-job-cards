@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Klever Job Card &mdash; Small (A6, 4-up)</title>
+<style>
+  /* ════════════════════════════════════════════════════════════════
+     FORM JC-01S  —  the A6 short form of the A4 Job Card (JC-01).
+     One A4 sheet holds four identical cards; cut on the grey cross.
+     Stages and owners are quoted verbatim from JC-01 REV 2 — the
+     stage data lives in the STAGES array at the foot of this file.
+     ════════════════════════════════════════════════════════════════ */
+
+  @page { size: A4 portrait; margin: 0; }
+
+  :root{
+    --ink:      #2b2b2b;
+    --charcoal: #4f4f4f;
+    --label:    #8c8c8c;
+    --rule:     #b9b9b9;
+    --hair:     #d7d7d7;
+    --c1: #4a86c8;   /* commercial            */
+    --c2: #4a9d5b;   /* finance & procurement */
+    --c3: #e0714a;   /* production            */
+    --c4: #e0475f;   /* delivery & after-sales*/
+    --s1: #6d4fa2;   /* Bruktawit  — salesperson colour */
+    --s2: #17867e;   /* Tsega      — salesperson colour */
+    --d1: #d99a2b;   /* Yonus            — designer colour */
+    --d2: #c2418c;   /* Tekelawold       — designer colour */
+    --d3: #24457e;   /* Yohannes         — designer colour */
+    --d4: #7a9a1f;   /* Abrham Webeshet  — designer colour */
+    --d5: #8a4b25;   /* Abrham Gossaye   — designer colour */
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html,body{
+    font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
+    color:var(--ink);
+    background:#fff;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  /* ───────────────────────── 4-UP A4 SHEET ───────────────────────── */
+  /* A4 is 210 x 297mm; Chrome rounds its print box a hair under, so the
+     sheet is laid out just inside it — a flush 210mm spills a blank page. */
+  .sheet{
+    position:relative;
+    width:209.4mm; height:296.4mm;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:1fr 1fr;
+  }
+  .tile{ padding:5mm; overflow:hidden; }
+  .cut{ position:absolute; }
+  .cut.v{ left:50%; top:0; height:100%; border-left:.4pt dashed #c9c9c9; }
+  .cut.h{ top:50%; left:0; width:100%; border-top:.4pt dashed #c9c9c9; }
+
+  /* ─────────────────────────── THE CARD ─────────────────────────── */
+  /* fills its tile: about 94.7 x 138.2mm of ink, 5mm quiet zone all round */
+  .card{ width:100%; height:100%; display:flex; flex-direction:column; }
+
+  .head{
+    background:var(--charcoal); color:#fff;
+    padding:2.2mm 3.2mm 2mm;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{ font-size:4.6pt; letter-spacing:.34em; font-weight:600; opacity:.85; }
+  .title{ font-size:12.5pt; font-weight:800; letter-spacing:.02em; line-height:1.05; margin:.6mm 0; }
+  .tagline{ font-size:4.2pt; letter-spacing:.14em; font-weight:600; opacity:.9; white-space:nowrap; }
+  .card.sales{ border-left:3mm solid var(--sales); }   /* who sold it   */
+  .card.desg{ border-right:3mm solid var(--desg); }    /* who designs it */
+  .who{ display:none; }
+  .sales .who{
+    display:inline-block;
+    background:var(--sales); color:#fff;
+    font-size:4.2pt; font-weight:800; letter-spacing:.12em;
+    padding:.4mm 1.2mm .5mm; border-radius:.6mm; margin-right:1.4mm;
+  }
+
+  .codes{ display:flex; gap:1.8mm; }
+  .code{ background:#fff; border-radius:1mm; padding:1.2mm 1.6mm 1.4mm; width:19mm; }
+  .code .k{ font-size:4.2pt; letter-spacing:.14em; font-weight:700; color:var(--label); }
+  .code .v{
+    margin-top:1.2mm;
+    font-size:7.4pt; font-weight:800; color:var(--charcoal);
+    border-bottom:.5pt solid var(--rule); padding-bottom:.4mm;
+  }
+
+  .stripe{ display:flex; height:1.5mm; flex:none; }
+  .stripe i{ display:block; height:100%; }
+
+  /* fields */
+  .fields{ padding:1.9mm 0 .5mm; }
+  .row{ display:flex; gap:3.4mm; margin-bottom:1.4mm; }
+  .f{ flex:1; }
+  .f.w2{ flex:1.7; }
+  .f label{
+    display:block;
+    font-size:4.2pt; letter-spacing:.15em; font-weight:700;
+    color:var(--label); text-transform:uppercase;
+  }
+  .f .line{ height:3.4mm; border-bottom:.5pt solid var(--rule); }
+
+  /* designer picker — tick one; the list must match the A4 card's */
+  .pick{ display:flex; align-items:center; gap:3mm; padding:0 0 1.3mm; }
+  .pick > b{
+    font-size:4.1pt; letter-spacing:.15em; font-weight:700;
+    color:var(--label); white-space:nowrap;
+  }
+  .pick .tick{ display:flex; align-items:center; gap:.8mm; flex:0 0 auto; }
+  .pick .tick i{
+    display:block; width:2mm; height:2mm; flex:none;
+    border:.5pt solid #9d9d9d; border-radius:.4mm;
+  }
+  .pick .tick span{ font-size:4pt; font-weight:700; white-space:nowrap; }
+  .pick .tick.on i{ background:var(--desg); border-color:var(--desg); }
+  .pick .tick.on span{ color:var(--desg); }
+
+  /* stage tracker */
+  .sec{ display:flex; align-items:baseline; gap:1.6mm; margin:.3mm 0 .6mm; }
+  .sec span{ font-size:5.6pt; font-weight:800; letter-spacing:.14em; }
+  .sec em{ font-size:4.1pt; font-style:normal; letter-spacing:.05em; color:var(--label); font-weight:500; }
+
+  .cols{
+    display:flex;
+    font-size:4.1pt; letter-spacing:.15em; font-weight:700; color:var(--label);
+    padding:0 2mm .8mm 7.1mm;
+  }
+  .cols .s{ flex:1; }
+  .cols .m{ width:13mm; }
+  .cols .d{ width:12mm; }
+  .cols .g{ width:19mm; }
+
+  .band{
+    display:flex; align-items:center; justify-content:space-between;
+    color:#fff; padding:.6mm 2mm;
+    font-size:4.4pt; letter-spacing:.16em; font-weight:800;
+    margin-top:.4mm;
+  }
+  .band .n{ font-size:4.1pt; letter-spacing:.12em; font-weight:700; }
+
+  .stage{
+    display:flex; align-items:center;
+    height:4mm; padding:0 2mm;
+    border-bottom:.35pt solid var(--hair);
+  }
+  .stage.alt{ background:#fafafa; }
+  .stage .num{
+    width:3.2mm; height:3.2mm; border-radius:.5mm; flex:none;
+    color:#fff; font-size:4.3pt; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    margin-right:1.9mm;
+  }
+  .stage .name{ flex:1; font-size:5.4pt; font-weight:800; letter-spacing:.02em; }
+  .stage .by{ width:13mm; font-size:5pt; font-weight:700; }
+  .stage .sign{ width:10.6mm; border-bottom:.5pt solid var(--rule); height:2.8mm; margin-right:1.4mm; }
+  .stage .sign.last{ width:19mm; margin-right:0; }
+
+  /* hard stops */
+  .stops{
+    margin-top:1.6mm;
+    background:var(--charcoal);
+    border-left:1.4mm solid var(--c4);
+    color:#fff; padding:1.4mm 2.2mm 1.5mm;
+  }
+  .stops h4{ font-size:4.4pt; letter-spacing:.16em; font-weight:800; margin-bottom:1mm; }
+  .stops li{
+    list-style:none;
+    font-size:4.3pt; line-height:1.4; font-weight:500;
+    padding-left:2.2mm; position:relative;
+  }
+  .stops li::before{
+    content:""; position:absolute; left:0; top:.9mm;
+    width:.9mm; height:.9mm; background:var(--c4);
+  }
+
+  .foot{
+    display:flex; justify-content:space-between; gap:2mm;
+    margin-top:auto; padding-top:1.4mm;
+    font-size:3.9pt; letter-spacing:.12em; font-weight:600; color:var(--label);
+  }
+  /* ── on-screen picker: choose the two people, then print. Never printed. ── */
+  @media screen{
+    html{ background:#ececec; }
+    body{ padding:26mm 0 10mm; display:flex; justify-content:center; }
+    .sheet{ box-shadow:0 1mm 4mm rgba(0,0,0,.18); }
+    .bar{
+      position:fixed; top:0; left:0; right:0; z-index:9;
+      display:flex; flex-wrap:wrap; align-items:center; gap:4mm;
+      padding:3mm 6mm; background:#2b2b2b; color:#fff;
+      font:12px/1.5 "Helvetica Neue", Arial, sans-serif; letter-spacing:.06em;
+    }
+    .bar b{ font-weight:800; letter-spacing:.18em; }
+    .bar select{ font:inherit; padding:2px 6px; }
+    .bar .key{ display:flex; flex-wrap:wrap; gap:3mm; opacity:.9; }
+    .bar .key span{ display:flex; align-items:center; gap:4px; }
+    .bar .key i{ width:11px; height:11px; border-radius:2px; display:block; }
+  }
+  @media print{ .bar{ display:none !important; } }
+
+</style>
+</head>
+<body>
+
+<div class="bar" id="bar"></div>
+
+<div class="sheet" id="sheet">
+  <div class="cut v"></div>
+  <div class="cut h"></div>
+</div>
+
+<template id="card">
+  <div class="card">
+
+    <div class="head">
+      <div>
+        <div class="brand">KLEVER</div>
+        <div class="title">JOB CARD</div>
+        <div class="tagline"><span class="who"></span>ONE CARD PER JOB &nbsp;&mdash;&nbsp; MOVES WITH THE BOARD</div>
+      </div>
+      <div class="codes">
+        <div class="code"><div class="k">LEAD ID</div><div class="v">L</div></div>
+        <div class="code"><div class="k">JOB CODE</div><div class="v">KK</div></div>
+      </div>
+    </div>
+
+    <div class="stripe">
+      <i style="width:31.25%;background:var(--c1)"></i>
+      <i style="width:25%;background:var(--c2)"></i>
+      <i style="width:18.75%;background:var(--c3)"></i>
+      <i style="width:25%;background:var(--c4)"></i>
+    </div>
+
+    <div class="fields">
+      <div class="row">
+        <div class="f w2"><label>Customer Name</label><div class="line"></div></div>
+        <div class="f"><label>Phone</label><div class="line"></div></div>
+      </div>
+      <div class="row">
+        <div class="f w2"><label>What They Ordered</label><div class="line"></div></div>
+        <div class="f"><label>Target Delivery</label><div class="line"></div></div>
+      </div>
+    </div>
+
+    <div class="pick"><b>DESIGNER</b></div>
+
+    <div class="sec"><span>STAGE TRACKER</span><em>no signature, no move</em></div>
+
+    <div class="cols">
+      <div class="s">STAGE</div><div class="m">MOVED BY</div><div class="d">DATE</div><div class="g">SIGNATURE</div>
+    </div>
+
+    <div class="track"></div>
+
+    <div class="stops">
+      <h4>HARD STOPS &mdash; NON-NEGOTIABLE</h4>
+      <ul>
+        <li>No production without 100% final payment confirmed by Betty.</li>
+        <li>No delivery without QC release signed by Wede.</li>
+        <li>No assembler payment without the signed Customer Acceptance Form.</li>
+      </ul>
+    </div>
+
+    <div class="foot">
+      <span>FORM JC-01S &nbsp;&middot;&nbsp; REV 2 &nbsp;&middot;&nbsp; 19 SEP 2026</span>
+      <span>SHORT FORM OF JC-01</span>
+    </div>
+
+  </div>
+</template>
+
+<script>
+/* Stages and owners — must match Form JC-01 REV 2 verbatim. */
+var STAGES = [
+  ["COMMERCIAL", "STAGES 1–5", "c1", [
+    [1,  "LEAD",                    "Salesperson"],
+    [2,  "ADVANCE PAID",            "Betty"],
+    [3,  "FINAL MEASUREMENT",       "Designer"],
+    [4,  "MATERIAL SELECTION",      "Designer"],
+    [5,  "PURCHASE APPROVAL",       "Ephrata"]]],
+  ["FINANCE &amp; PROCUREMENT", "STAGES 6–9", "c2", [
+    [6,  "MATERIALS ORDERED",       "Getachew"],
+    [7,  "MATERIALS RECEIVED",      "Yordanos"],
+    [8,  "FINAL PAYMENT REQUESTED", "Betty"],
+    [9,  "FINAL PAYMENT RECEIVED",  "Betty"]]],
+  ["PRODUCTION", "STAGES 10–12", "c3", [
+    [10, "PRODUCTION APPROVED",     "Liu"],
+    [11, "PRODUCTION COMPLETED",    "Amha"],
+    [12, "QC RELEASED",             "Wede"]]],
+  ["DELIVERY &amp; AFTER-SALES", "STAGES 13–16", "c4", [
+    [13, "READY FOR DELIVERY",      "Betty"],
+    [14, "DELIVERED / INSTALLED",   "Elias"],
+    [15, "CUSTOMER ACCEPTANCE",     "Elias"],
+    [16, "AFTER-SALES FOLLOW-UP",   "Salesperson"]]]
+];
+
+function trackHTML(){
+  var out = "", row = 0;
+  STAGES.forEach(function(band){
+    var col = "var(--" + band[2] + ")";
+    out += '<div class="band" style="background:' + col + '">' +
+             '<span>' + band[0] + '</span><span class="n">' + band[1] + '</span></div>';
+    band[3].forEach(function(s){
+      out += '<div class="stage' + (row++ % 2 ? " alt" : "") + '">' +
+               '<div class="num" style="background:' + col + '">' + s[0] + '</div>' +
+               '<div class="name">' + s[1] + '</div>' +
+               '<div class="by" style="color:' + col + '">' + s[2] + '</div>' +
+               '<div class="sign"></div><div class="sign last"></div></div>';
+    });
+  });
+  return out;
+}
+
+/* Designers, as on the A4 card. Stages 3 and 4 still read "Designer" verbatim;
+   the tick says which one. */
+/* surnames are cut to an initial here only — an A6 row has no space for
+   ABRHAM WEBESHET and ABRHAM GOSSAYE in full. The A4 card prints them whole. */
+var DESIGNERS = [
+  { key: "yonus",      name: "YONUS",      color: "var(--d1)" },
+  { key: "tekelawold", name: "TEKELAWOLD", color: "var(--d2)" },
+  { key: "yohannes",   name: "YOHANNES",   color: "var(--d3)" },
+  { key: "abrhamw",    name: "ABRHAM W.",  color: "var(--d4)" },
+  { key: "abrhamg",    name: "ABRHAM G.",  color: "var(--d5)" }
+];
+
+function pickHTML(chosen){
+  return DESIGNERS.map(function(d){
+    var on = (chosen && d.key === chosen.key) ? " on" : "";
+    return '<div class="tick' + on + '"><i></i><span>' + d.name + '</span></div>';
+  }).join("");
+}
+
+/* Salespeople. The stage rows still read "Salesperson" verbatim, as on JC-01;
+   the name and colour identify whose job the card is. */
+var SALES = {
+  bruktawit: { name: "BRUKTAWIT", color: "var(--s1)" },
+  tsega:     { name: "TSEGA",     color: "var(--s2)" }
+};
+
+/* ?s=bruktawit or ?s=tsega fills the sheet with one salesperson's cards;
+   ?s=mix prints two of each; no query at all prints the plain card. */
+function param(k){
+  var v = (location.search.match(new RegExp("[?&]" + k + "=([^&]+)")) || [])[1];
+  return v ? decodeURIComponent(v).toLowerCase() : "";
+}
+
+function designer(){
+  var q = param("d");
+  return DESIGNERS.filter(function(d){ return d.key === q; })[0] || null;
+}
+
+function plan(){
+  var q = param("s");
+  if (q === "mix") return [SALES.bruktawit, SALES.bruktawit, SALES.tsega, SALES.tsega];
+  var who = SALES[q];
+  return [who, who, who, who];
+}
+
+(function(){
+  var tpl = document.getElementById("card");
+  var sheet = document.getElementById("sheet");
+  var track = trackHTML();
+  var whose = plan();
+  var des = designer();
+  var card0;
+  for (var i = 0; i < 4; i++){
+    var tile = document.createElement("div");
+    tile.className = "tile";
+    tile.appendChild(tpl.content.cloneNode(true));
+    tile.querySelector(".track").innerHTML = track;
+    tile.querySelector(".pick").insertAdjacentHTML("beforeend", pickHTML(des));
+    if (des){
+      card0 = tile.querySelector(".card");
+      card0.classList.add("desg");
+      card0.style.setProperty("--desg", des.color);
+    }
+    var who = whose[i];
+    if (who){
+      var card = tile.querySelector(".card");
+      card.classList.add("sales");
+      card.style.setProperty("--sales", who.color);
+      /* the pill needs the room the second half of the tagline was using,
+         or the LEAD ID / JOB CODE boxes run off the card */
+      var tag = tile.querySelector(".tagline");
+      tag.innerHTML = '<span class="who"></span>ONE CARD PER JOB';
+      tag.querySelector(".who").textContent = who.name;
+    }
+    sheet.appendChild(tile);
+  }
+})();
+</script>
+
+
+<script>
+/* The picker is a screen-only convenience — it just rewrites ?s= and ?d=. */
+(function(){
+  var bar = document.getElementById("bar");
+  if (!bar) return;
+
+  var sales = Object.keys(SALES).map(function(k){
+    return { key:k, name:SALES[k].name, color:SALES[k].color };
+  });
+  var salesOpts = sales.slice();
+  salesOpts.push({ key:"mix", name:"TWO OF EACH" });
+
+  function options(list, current){
+    return '<option value="">&mdash; none &mdash;</option>' + list.map(function(o){
+      return '<option value="' + o.key + '"' +
+             (o.key === current ? ' selected' : '') + '>' + o.name + '</option>';
+    }).join("");
+  }
+  function chips(list){
+    return list.map(function(o){
+      return '<span><i style="background:' + o.color + '"></i>' + o.name + '</span>';
+    }).join("");
+  }
+
+  bar.innerHTML =
+    '<b>PRINT SET-UP</b>' +
+    '<label>Salesperson <select id="selS">' + options(salesOpts, param("s")) + '</select></label>' +
+    '<label>Designer <select id="selD">' + options(DESIGNERS, param("d")) + '</select></label>' +
+    '<span class="key">' + chips(sales) + chips(DESIGNERS) + '</span>';
+
+  function go(){
+    var q = [];
+    var s = document.getElementById("selS").value;
+    var d = document.getElementById("selD").value;
+    if (s) q.push("s=" + s);
+    if (d) q.push("d=" + d);
+    location.search = q.length ? "?" + q.join("&") : "?";
+  }
+  bar.addEventListener("change", go);
+})();
+</script>
+
+</body>
+</html>

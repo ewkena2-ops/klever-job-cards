@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Klever Job Card</title>
+<style>
+  @page { size: A4 portrait; margin: 10mm 9mm; }
+
+  :root{
+    --ink:      #2b2b2b;
+    --charcoal: #4f4f4f;
+    --label:    #8c8c8c;
+    --rule:     #b9b9b9;
+    --hair:     #d7d7d7;
+    --c1: #4a86c8;   /* commercial            */
+    --c2: #4a9d5b;   /* finance & procurement */
+    --c3: #e0714a;   /* production            */
+    --c4: #e0475f;   /* delivery & after-sales*/
+    --s1: #6d4fa2;   /* Bruktawit  — salesperson colour      */
+    --s2: #17867e;   /* Tsega      — salesperson colour      */
+    --t1: #b9a3e6;   /* Bruktawit  — tint, for the dark head */
+    --t2: #5fd0c4;   /* Tsega      — tint, for the dark head */
+    --d1: #d99a2b;   /* Yonus            — designer colour  */
+    --d2: #c2418c;   /* Tekelawold       — designer colour  */
+    --d3: #24457e;   /* Yohannes         — designer colour  */
+    --d4: #7a9a1f;   /* Abrham Webeshet  — designer colour  */
+    --d5: #8a4b25;   /* Abrham Gossaye   — designer colour  */
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html,body{
+    font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
+    color:var(--ink);
+    background:#fff;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  body{ width:192mm; }
+
+  /* ─────────────────────────── HEADER ─────────────────────────── */
+  .head{
+    background:var(--charcoal);
+    color:#fff;
+    padding:4.5mm 7mm 4mm;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .brand{ font-size:8pt; letter-spacing:.42em; font-weight:600; color:#ffffff; opacity:.85; }
+  .title{ font-size:23pt; font-weight:800; letter-spacing:.02em; line-height:1.05; margin:1mm 0 1mm; }
+  .tagline{ font-size:7pt; letter-spacing:.26em; font-weight:600; color:#ffffff; opacity:.9; }
+  /* Salesperson marks. All three are height-neutral: a colour block on the
+     head, the name in the tagline, the name on the card's Salesperson line. */
+  .sales .head{ border-left:8mm solid var(--sales); }   /* who sold it    */
+  .desg .head{ border-right:8mm solid var(--desg); }    /* who designs it */
+  .who{ display:none; }
+  .sales .who{
+    display:inline; color:var(--tint); font-weight:800;
+    letter-spacing:.3em; margin-right:2.2mm;
+  }
+  .f .line.filled{
+    font-size:9pt; font-weight:800; color:var(--sales);
+    line-height:4.8mm; letter-spacing:.02em;
+  }
+
+  .codes{ display:flex; gap:4mm; }
+  .code{
+    background:#fff;
+    border-radius:1.5mm;
+    padding:2.2mm 3.2mm 2.8mm;
+    width:36mm;
+  }
+  .code .k{ font-size:6.2pt; letter-spacing:.2em; font-weight:700; color:var(--label); }
+  .code .v{
+    margin-top:2.2mm;
+    font-size:12pt; font-weight:800; color:var(--charcoal);
+    border-bottom:.5pt solid var(--rule);
+    padding-bottom:.6mm;
+  }
+
+  .stripe{ display:flex; height:2.4mm; }
+  .stripe i{ display:block; height:100%; }
+
+  /* ─────────────────────────── SECTIONS ─────────────────────────── */
+  .sec{ display:flex; align-items:center; gap:2.6mm; margin:3.0mm 0 2.2mm; }
+  .sec b{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:4.6mm; height:4.6mm; border-radius:.8mm;
+    background:var(--charcoal); color:#fff;
+    font-size:7.5pt; font-weight:700;
+  }
+  .sec span{ font-size:10.5pt; font-weight:800; letter-spacing:.16em; }
+  .sec em{ font-size:6.8pt; font-style:normal; letter-spacing:.06em; color:var(--label); font-weight:500; }
+
+  /* fields */
+  .row{ display:flex; gap:6mm; margin-bottom:3.0mm; }
+  .f{ flex:1; }
+  .f.w2{ flex:2; }
+  .f label{
+    display:block;
+    font-size:6.2pt; letter-spacing:.19em; font-weight:700;
+    color:var(--label); text-transform:uppercase;
+  }
+  .f .line{ height:4.8mm; border-bottom:.6pt solid var(--rule); }
+
+  /* tick list */
+  .ticks{ display:flex; flex-wrap:wrap; margin-top:1mm; }
+  .tick{ width:25%; display:flex; align-items:center; gap:2mm; padding:0.9mm 0; }
+  .tick i{
+    display:block; width:3.4mm; height:3.4mm;
+    border:.7pt solid #9d9d9d; border-radius:.5mm; flex:none;
+  }
+  .tick span{ font-size:7.6pt; font-weight:700; letter-spacing:.045em; }
+  .tick u{ flex:1; border-bottom:.6pt solid var(--rule); height:3.2mm; text-decoration:none; margin-left:1mm; }
+
+  /* designer picker — tick one; the list must match the small card's DESIGNERS */
+  .pick{ display:flex; align-items:center; gap:3mm; margin:1.6mm 0 1.6mm; }
+  .pick > b{
+    font-size:6.2pt; letter-spacing:.19em; font-weight:700;
+    color:var(--label); white-space:nowrap;
+  }
+  .pick .tick{ width:auto; flex:1 1 auto; padding:0; }
+  .pick .tick span{ white-space:nowrap; }   /* two-word names must not wrap the row */
+  .pick .tick.on i{ background:var(--desg); border-color:var(--desg); }
+  .pick .tick.on span{ color:var(--desg); }
+
+  /* ───────────────────────── STAGE TRACKER ───────────────────────── */
+  .cols{
+    display:flex; align-items:flex-end;
+    font-size:6.2pt; letter-spacing:.19em; font-weight:700; color:var(--label);
+    padding:0 0 1.1mm 8mm;
+  }
+  .cols .s{ width:54mm; }
+  .cols .m{ width:30mm; }
+  .cols .d{ width:48mm; }
+  .cols .g{ width:48mm; }
+
+  .band{
+    display:flex; align-items:center; justify-content:space-between;
+    color:#fff; padding:1.15mm 3mm;
+    font-size:7pt; letter-spacing:.2em; font-weight:800;
+    margin-top:1.0mm;
+  }
+  .band .n{ font-size:6.4pt; letter-spacing:.16em; font-weight:700; }
+
+  .stage{
+    display:flex; align-items:center;
+    padding:0.55mm 3mm;
+    border-bottom:.4pt solid var(--hair);
+  }
+  .stage:nth-child(even){ background:#fafafa; }
+  .stage .num{
+    width:3.9mm; height:3.9mm; border-radius:.7mm; flex:none;
+    color:#fff; font-size:6.6pt; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    margin-right:3.8mm;
+  }
+  .stage .name{ width:54mm; font-size:8pt; font-weight:800; letter-spacing:.035em; }
+  .stage .by{ width:30mm; font-size:7.8pt; font-weight:700; }
+  .stage .sign{ width:44mm; border-bottom:.6pt solid var(--rule); height:4.1mm; margin-right:4mm; }
+  .stage .sign.last{ width:48mm; margin-right:0; }
+
+  /* ─────────────────────────── HARD STOPS ─────────────────────────── */
+  .stops{
+    margin-top:3.8mm;
+    background:var(--charcoal);
+    border-left:2.2mm solid var(--c4);
+    color:#fff;
+    padding:2.8mm 4.5mm 3mm;
+  }
+  .stops h4{ font-size:8pt; letter-spacing:.2em; font-weight:800; margin-bottom:2mm; color:#fff; }
+  .stops li{
+    list-style:none;
+    font-size:7.4pt; line-height:1.45; font-weight:500;
+    color:#ffffff;
+    padding-left:3.4mm; position:relative;
+  }
+  .stops li::before{
+    content:""; position:absolute; left:0; top:1.5mm;
+    width:1.2mm; height:1.2mm; background:var(--c4);
+  }
+
+  .foot{
+    display:flex; justify-content:space-between;
+    margin-top:2.6mm;
+    font-size:6pt; letter-spacing:.18em; font-weight:600; color:var(--label);
+  }
+  /* ── on-screen picker: choose the two people, then print. Never printed. ── */
+  @media screen{
+    html{ background:#ececec; }
+    body{ margin:26mm auto 10mm; padding:0 0 6mm; background:#fff; box-shadow:0 1mm 4mm rgba(0,0,0,.18); }
+    .bar{
+      position:fixed; top:0; left:0; right:0; z-index:9;
+      display:flex; flex-wrap:wrap; align-items:center; gap:4mm;
+      padding:3mm 6mm; background:#2b2b2b; color:#fff;
+      font:12px/1.5 "Helvetica Neue", Arial, sans-serif; letter-spacing:.06em;
+    }
+    .bar b{ font-weight:800; letter-spacing:.18em; }
+    .bar select{ font:inherit; padding:2px 6px; }
+    .bar .key{ display:flex; flex-wrap:wrap; gap:3mm; opacity:.9; }
+    .bar .key span{ display:flex; align-items:center; gap:4px; }
+    .bar .key i{ width:11px; height:11px; border-radius:2px; display:block; }
+  }
+  @media print{ .bar{ display:none !important; } }
+
+</style>
+</head>
+<body>
+
+<div class="bar" id="bar"></div>
+
+  <div class="head">
+    <div>
+      <div class="brand">KLEVER</div>
+      <div class="title">JOB CARD</div>
+      <div class="tagline"><span class="who"></span>ONE CARD PER JOB &nbsp;&mdash;&nbsp; MOVES WITH THE BOARD</div>
+    </div>
+    <div class="codes">
+      <div class="code"><div class="k">LEAD ID</div><div class="v">L</div></div>
+      <div class="code"><div class="k">JOB CODE</div><div class="v">KK</div></div>
+    </div>
+  </div>
+  <div class="stripe">
+    <i style="width:31.25%;background:var(--c1)"></i>
+    <i style="width:25%;background:var(--c2)"></i>
+    <i style="width:18.75%;background:var(--c3)"></i>
+    <i style="width:25%;background:var(--c4)"></i>
+  </div>
+
+  <!-- 1 ─ CUSTOMER & ORDER -->
+  <div class="sec"><b>1</b><span>CUSTOMER &amp; ORDER</span></div>
+
+  <div class="row">
+    <div class="f w2"><label>Customer Name</label><div class="line"></div></div>
+    <div class="f"><label>Phone</label><div class="line"></div></div>
+  </div>
+  <div class="row">
+    <div class="f"><label>Site Location / Delivery Address</label><div class="line"></div></div>
+  </div>
+  <div class="row">
+    <div class="f w2"><label>Salesperson</label><div class="line"></div></div>
+    <div class="f"><label>Lead Date</label><div class="line"></div></div>
+  </div>
+
+  <div class="pick">
+    <b>DESIGNER &mdash; TICK ONE</b>
+    <div class="tick" data-d="yonus"><i></i><span>YONUS</span></div>
+    <div class="tick" data-d="tekelawold"><i></i><span>TEKELAWOLD</span></div>
+    <div class="tick" data-d="yohannes"><i></i><span>YOHANNES</span></div>
+    <div class="tick" data-d="abrhamw"><i></i><span>ABRHAM WEBESHET</span></div>
+    <div class="tick" data-d="abrhamg"><i></i><span>ABRHAM GOSSAYE</span></div>
+  </div>
+
+  <div class="sec" style="margin:1mm 0 0">
+    <span style="font-size:6.2pt;letter-spacing:.19em;color:var(--label);font-weight:700">WHAT THEY ORDERED</span>
+    <em>tick all that apply</em>
+  </div>
+  <div class="ticks">
+    <div class="tick"><i></i><span>MODERN KITCHEN</span></div>
+    <div class="tick"><i></i><span>TRADITIONAL KITCHEN</span></div>
+    <div class="tick"><i></i><span>MASTER CLOSET</span></div>
+    <div class="tick"><i></i><span>WARDROBE</span></div>
+    <div class="tick"><i></i><span>SHOE RACK</span></div>
+    <div class="tick"><i></i><span>OPEN SHELF</span></div>
+    <div class="tick"><i></i><span>LAUNDRY</span></div>
+    <div class="tick"><i></i><span>OTHER</span><u></u></div>
+  </div>
+
+  <!-- 2 ─ COMMERCIAL -->
+  <div class="sec"><b>2</b><span>COMMERCIAL</span></div>
+
+  <div class="row">
+    <div class="f"><label>Quote Value (Birr)</label><div class="line"></div></div>
+    <div class="f"><label>Area (m&sup2;)</label><div class="line"></div></div>
+    <div class="f"><label>Target Delivery</label><div class="line"></div></div>
+  </div>
+  <div class="row">
+    <div class="f"><label>Advance 50% &ndash; Date</label><div class="line"></div></div>
+    <div class="f"><label>Final 100% &ndash; Date</label><div class="line"></div></div>
+    <div class="f"><label>WhatsApp Group Opened</label><div class="line"></div></div>
+  </div>
+
+  <!-- 3 ─ STAGE TRACKER -->
+  <div class="sec"><b>3</b><span>STAGE TRACKER</span>
+    <em>date and sign every stage &mdash; no signature, no move</em>
+  </div>
+
+  <div class="cols">
+    <div class="s">STAGE</div><div class="m">MOVED BY</div><div class="d">DATE</div><div class="g">SIGNATURE</div>
+  </div>
+
+  <div class="band" style="background:var(--c1)"><span>COMMERCIAL</span><span class="n">STAGES 1&ndash;5</span></div>
+  <div class="stage"><div class="num" style="background:var(--c1)">1</div><div class="name">LEAD</div><div class="by" style="color:var(--c1)">Salesperson</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c1)">2</div><div class="name">ADVANCE PAID</div><div class="by" style="color:var(--c1)">Betty</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c1)">3</div><div class="name">FINAL MEASUREMENT</div><div class="by" style="color:var(--c1)">Designer</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c1)">4</div><div class="name">MATERIAL SELECTION</div><div class="by" style="color:var(--c1)">Designer</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c1)">5</div><div class="name">PURCHASE APPROVAL</div><div class="by" style="color:var(--c1)">Ephrata</div><div class="sign"></div><div class="sign last"></div></div>
+
+  <div class="band" style="background:var(--c2)"><span>FINANCE &amp; PROCUREMENT</span><span class="n">STAGES 6&ndash;9</span></div>
+  <div class="stage"><div class="num" style="background:var(--c2)">6</div><div class="name">MATERIALS ORDERED</div><div class="by" style="color:var(--c2)">Getachew</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c2)">7</div><div class="name">MATERIALS RECEIVED</div><div class="by" style="color:var(--c2)">Yordanos</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c2)">8</div><div class="name">FINAL PAYMENT REQUESTED</div><div class="by" style="color:var(--c2)">Betty</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c2)">9</div><div class="name">FINAL PAYMENT RECEIVED</div><div class="by" style="color:var(--c2)">Betty</div><div class="sign"></div><div class="sign last"></div></div>
+
+  <div class="band" style="background:var(--c3)"><span>PRODUCTION</span><span class="n">STAGES 10&ndash;12</span></div>
+  <div class="stage"><div class="num" style="background:var(--c3)">10</div><div class="name">PRODUCTION APPROVED</div><div class="by" style="color:var(--c3)">Liu</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c3)">11</div><div class="name">PRODUCTION COMPLETED</div><div class="by" style="color:var(--c3)">Amha</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c3)">12</div><div class="name">QC RELEASED</div><div class="by" style="color:var(--c3)">Wede</div><div class="sign"></div><div class="sign last"></div></div>
+
+  <div class="band" style="background:var(--c4)"><span>DELIVERY &amp; AFTER-SALES</span><span class="n">STAGES 13&ndash;16</span></div>
+  <div class="stage"><div class="num" style="background:var(--c4)">13</div><div class="name">READY FOR DELIVERY</div><div class="by" style="color:var(--c4)">Betty</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c4)">14</div><div class="name">DELIVERED / INSTALLED</div><div class="by" style="color:var(--c4)">Elias</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c4)">15</div><div class="name">CUSTOMER ACCEPTANCE</div><div class="by" style="color:var(--c4)">Elias</div><div class="sign"></div><div class="sign last"></div></div>
+  <div class="stage"><div class="num" style="background:var(--c4)">16</div><div class="name">AFTER-SALES FOLLOW-UP</div><div class="by" style="color:var(--c4)">Salesperson</div><div class="sign"></div><div class="sign last"></div></div>
+
+  <!-- HARD STOPS -->
+  <div class="stops">
+    <h4>HARD STOPS &mdash; NON-NEGOTIABLE</h4>
+    <ul>
+      <li>No production starts without 100% final payment confirmed by Betty and logged in the Job File.</li>
+      <li>No delivery without QC release signed by Wede.</li>
+      <li>No assembler payment without the physical Customer Acceptance Form in the Job File.</li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    <span>KLEVER &nbsp;&middot;&nbsp; FORM JC-01 &nbsp;&middot;&nbsp; REV 2 &nbsp;&middot;&nbsp; EFFECTIVE 19 SEPTEMBER 2026</span>
+    <span>PAGE 1 OF 1</span>
+  </div>
+
+<script>
+/* Salespeople. The stage rows still read "Salesperson" verbatim; the name and
+   colour say whose job this card is. Print with ?s=bruktawit or ?s=tsega —
+   with no query the card prints plain, exactly as it always has. */
+var SALES = {
+  bruktawit: { name: "BRUKTAWIT", sign: "Bruktawit", color: "var(--s1)", tint: "var(--t1)" },
+  tsega:     { name: "TSEGA",     sign: "Tsega",     color: "var(--s2)", tint: "var(--t2)" }
+};
+
+/* Designers, in the order they are printed on the card. */
+var DESIGNERS = [
+  { key: "yonus",      name: "YONUS",           color: "var(--d1)" },
+  { key: "tekelawold", name: "TEKELAWOLD",      color: "var(--d2)" },
+  { key: "yohannes",   name: "YOHANNES",        color: "var(--d3)" },
+  { key: "abrhamw",    name: "ABRHAM WEBESHET", color: "var(--d4)" },
+  { key: "abrhamg",    name: "ABRHAM GOSSAYE",  color: "var(--d5)" }
+];
+
+function param(k){
+  var v = (location.search.match(new RegExp("[?&]" + k + "=([^&]+)")) || [])[1];
+  return v ? decodeURIComponent(v).toLowerCase() : "";
+}
+
+/* ?d=yonus paints the designer's colour on the head's right edge and fills
+   that designer's tick. */
+(function(){
+  var des = DESIGNERS.filter(function(d){ return d.key === param("d"); })[0];
+  if (!des) return;
+  document.body.classList.add("desg");
+  document.body.style.setProperty("--desg", des.color);
+  var tick = document.querySelector('.tick[data-d="' + des.key + '"]');
+  if (tick) tick.className = "tick on";
+})();
+
+(function(){
+  var who = SALES[param("s")];
+  if (!who) return;
+
+  document.body.classList.add("sales");
+  document.body.style.setProperty("--sales", who.color);
+  document.body.style.setProperty("--tint",  who.tint);
+
+  /* the name takes the room "MOVES WITH THE BOARD" was using — left whole,
+     the tagline wraps to a second line and the card spills onto page two */
+  var tag = document.querySelector(".tagline");
+  tag.innerHTML = '<span class="who"></span>ONE CARD PER JOB';
+  tag.querySelector(".who").textContent = who.name;
+
+  /* the card already has a Salesperson field — print the name on its line */
+  [].forEach.call(document.querySelectorAll(".f"), function(f){
+    var label = f.querySelector("label");
+    if (label && label.textContent.trim() === "Salesperson"){
+      var line = f.querySelector(".line");
+      line.className = "line filled";
+      line.textContent = who.sign;
+    }
+  });
+})();
+</script>
+
+
+<script>
+/* The picker is a screen-only convenience — it just rewrites ?s= and ?d=. */
+(function(){
+  var bar = document.getElementById("bar");
+  if (!bar) return;
+
+  var sales = Object.keys(SALES).map(function(k){
+    return { key:k, name:SALES[k].name, color:SALES[k].color };
+  });
+  var salesOpts = sales.slice();
+  
+
+  function options(list, current){
+    return '<option value="">&mdash; none &mdash;</option>' + list.map(function(o){
+      return '<option value="' + o.key + '"' +
+             (o.key === current ? ' selected' : '') + '>' + o.name + '</option>';
+    }).join("");
+  }
+  function chips(list){
+    return list.map(function(o){
+      return '<span><i style="background:' + o.color + '"></i>' + o.name + '</span>';
+    }).join("");
+  }
+
+  bar.innerHTML =
+    '<b>PRINT SET-UP</b>' +
+    '<label>Salesperson <select id="selS">' + options(salesOpts, param("s")) + '</select></label>' +
+    '<label>Designer <select id="selD">' + options(DESIGNERS, param("d")) + '</select></label>' +
+    '<span class="key">' + chips(sales) + chips(DESIGNERS) + '</span>';
+
+  function go(){
+    var q = [];
+    var s = document.getElementById("selS").value;
+    var d = document.getElementById("selD").value;
+    if (s) q.push("s=" + s);
+    if (d) q.push("d=" + d);
+    location.search = q.length ? "?" + q.join("&") : "?";
+  }
+  bar.addEventListener("change", go);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Klever Job Flow Card</title>
+<style>
+  @page { size: A4 portrait; margin: 10mm 9mm; }
+
+  :root{
+    --ink:      #2b2b2b;
+    --charcoal: #4f4f4f;
+    --label:    #8c8c8c;
+    --hair:     #d7d7d7;
+    --grey:     #7a7368;
+    --c1: #4a86c8;   /* commercial             */
+    --c2: #4a9d5b;   /* finance & procurement  */
+    --c3: #e0714a;   /* production             */
+    --c4: #e0475f;   /* delivery & after-sales */
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html,body{
+    font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
+    color:var(--ink); background:#fff;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  body{ width:192mm; }
+
+  /* ─────────────────────────── HEADER ─────────────────────────── */
+  .head{
+    background:var(--charcoal); color:#fff;
+    padding:4.5mm 7mm 4mm;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{ font-size:8pt; letter-spacing:.42em; font-weight:600; opacity:.85; }
+  .title{ font-size:23pt; font-weight:800; letter-spacing:.02em; line-height:1.05; margin:1mm 0; }
+  .tagline{ font-size:7pt; letter-spacing:.26em; font-weight:600; opacity:.9; }
+
+  .count{ background:#fff; border-radius:1.5mm; padding:2.2mm 4.4mm 2.6mm; text-align:center; }
+  .count .k{ font-size:6.2pt; letter-spacing:.2em; font-weight:700; color:var(--label); }
+  .count .v{ font-size:19pt; font-weight:800; color:var(--charcoal); line-height:1.15; }
+
+  .stripe{ display:flex; height:2.4mm; }
+  .stripe i{ display:block; height:100%; }
+
+  .lede{
+    font-size:7.6pt; line-height:1.5; color:var(--charcoal);
+    margin:3mm 0 0; max-width:170mm;
+  }
+  .lede b{ color:var(--ink); }
+
+  /* ────────────────────────── ZONE BANDS ────────────────────────── */
+  .z{
+    display:flex; align-items:center; justify-content:space-between;
+    color:#fff; padding:1.25mm 3mm;
+    font-size:7.4pt; letter-spacing:.2em; font-weight:800;
+    margin-top:2.3mm;
+  }
+  .z .c{ font-size:6.4pt; letter-spacing:.16em; font-weight:700; opacity:.88; }
+
+  .s{
+    display:flex; align-items:center;
+    height:9.2mm; padding:0 3mm;
+    border-bottom:.4pt solid var(--hair);
+  }
+  .s:nth-of-type(even){ background:#fafafa; }
+  .s b{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:5.6mm; height:5.6mm; border-radius:.8mm;
+    color:#fff; font-size:7.6pt; font-weight:700;
+    flex:none; margin-right:4mm;
+  }
+  .s .n{ flex:1; font-size:11pt; font-weight:800; letter-spacing:.02em; }
+  .s em{
+    font-style:normal; font-size:5.8pt; letter-spacing:.2em; font-weight:700;
+    color:var(--label); margin-right:2.6mm;
+  }
+  .s .w{ width:32mm; font-size:10pt; font-weight:700; }
+
+  .s.hold{ border-bottom:0; background:#fff; }
+  .s.hold .n{ color:var(--grey); }
+
+  /* ────────────────────────── HARD STOPS ────────────────────────── */
+  .stops{
+    margin-top:3.8mm;
+    background:var(--charcoal);
+    border-left:2.2mm solid var(--c4);
+    color:#fff; padding:2.8mm 4.5mm 3mm;
+  }
+  .stops h4{ font-size:8pt; letter-spacing:.2em; font-weight:800; margin-bottom:2mm; }
+  .stops li{
+    list-style:none; font-size:7.4pt; line-height:1.45; font-weight:500;
+    padding-left:3.4mm; position:relative;
+  }
+  .stops li::before{
+    content:""; position:absolute; left:0; top:1.5mm;
+    width:1.2mm; height:1.2mm; background:var(--c4);
+  }
+
+  .foot{
+    display:flex; justify-content:space-between; gap:6mm;
+    margin-top:2.6mm;
+    font-size:6pt; letter-spacing:.18em; font-weight:600; color:var(--label);
+  }
+</style>
+</head>
+<body>
+
+  <div class="head">
+    <div>
+      <div class="brand">KLEVER</div>
+      <div class="title">JOB FLOW</div>
+      <div class="tagline">LEAD TO AFTER-SALES &nbsp;&mdash;&nbsp; WHO SIGNS, AND IN WHAT ORDER</div>
+    </div>
+    <div class="count">
+      <div class="k">STAGES</div>
+      <div class="v">16</div>
+    </div>
+  </div>
+
+  <!-- stripe widths follow the stage count in each zone: 5, 4, 3, 4 of 16 -->
+  <div class="stripe">
+    <i style="width:31.25%;background:var(--c1)"></i>
+    <i style="width:25%;background:var(--c2)"></i>
+    <i style="width:18.75%;background:var(--c3)"></i>
+    <i style="width:25%;background:var(--c4)"></i>
+  </div>
+
+  <p class="lede">This sheet is the reading copy &mdash; pin it up. The signing copy is <b>Form JC-01, the Job Card</b>,
+  one per job, carrying these same sixteen stages with a date and a signature line against each.</p>
+
+  <div class="z" style="background:var(--c1)"><span>COMMERCIAL</span><span class="c">STAGES 1&ndash;5</span></div>
+  <div class="s"><b style="background:var(--c1)">1</b><span class="n">LEAD</span><em>MOVED BY</em><span class="w" style="color:var(--c1)">Salesperson</span></div>
+  <div class="s"><b style="background:var(--c1)">2</b><span class="n">ADVANCE PAID</span><em>MOVED BY</em><span class="w" style="color:var(--c1)">Betty</span></div>
+  <div class="s"><b style="background:var(--c1)">3</b><span class="n">FINAL MEASUREMENT</span><em>MOVED BY</em><span class="w" style="color:var(--c1)">Designer</span></div>
+  <div class="s"><b style="background:var(--c1)">4</b><span class="n">MATERIAL SELECTION</span><em>MOVED BY</em><span class="w" style="color:var(--c1)">Designer</span></div>
+  <div class="s"><b style="background:var(--c1)">5</b><span class="n">PURCHASE APPROVAL</span><em>MOVED BY</em><span class="w" style="color:var(--c1)">Ephrata</span></div>
+
+  <div class="z" style="background:var(--c2)"><span>FINANCE &amp; PROCUREMENT</span><span class="c">STAGES 6&ndash;9</span></div>
+  <div class="s"><b style="background:var(--c2)">6</b><span class="n">MATERIALS ORDERED</span><em>MOVED BY</em><span class="w" style="color:var(--c2)">Getachew</span></div>
+  <div class="s"><b style="background:var(--c2)">7</b><span class="n">MATERIALS RECEIVED</span><em>MOVED BY</em><span class="w" style="color:var(--c2)">Yordanos</span></div>
+  <div class="s"><b style="background:var(--c2)">8</b><span class="n">FINAL PAYMENT REQUESTED</span><em>MOVED BY</em><span class="w" style="color:var(--c2)">Betty</span></div>
+  <div class="s"><b style="background:var(--c2)">9</b><span class="n">FINAL PAYMENT RECEIVED</span><em>MOVED BY</em><span class="w" style="color:var(--c2)">Betty</span></div>
+
+  <div class="z" style="background:var(--c3)"><span>PRODUCTION</span><span class="c">STAGES 10&ndash;12</span></div>
+  <div class="s"><b style="background:var(--c3)">10</b><span class="n">PRODUCTION APPROVED</span><em>MOVED BY</em><span class="w" style="color:var(--c3)">Liu</span></div>
+  <div class="s"><b style="background:var(--c3)">11</b><span class="n">PRODUCTION COMPLETED</span><em>MOVED BY</em><span class="w" style="color:var(--c3)">Amha</span></div>
+  <div class="s"><b style="background:var(--c3)">12</b><span class="n">QC RELEASED</span><em>MOVED BY</em><span class="w" style="color:var(--c3)">Wede</span></div>
+
+  <div class="z" style="background:var(--c4)"><span>DELIVERY &amp; AFTER-SALES</span><span class="c">STAGES 13&ndash;16</span></div>
+  <div class="s"><b style="background:var(--c4)">13</b><span class="n">READY FOR DELIVERY</span><em>MOVED BY</em><span class="w" style="color:var(--c4)">Betty</span></div>
+  <div class="s"><b style="background:var(--c4)">14</b><span class="n">DELIVERED / INSTALLED</span><em>MOVED BY</em><span class="w" style="color:var(--c4)">Elias</span></div>
+  <div class="s"><b style="background:var(--c4)">15</b><span class="n">CUSTOMER ACCEPTANCE</span><em>MOVED BY</em><span class="w" style="color:var(--c4)">Elias</span></div>
+  <div class="s"><b style="background:var(--c4)">16</b><span class="n">AFTER-SALES FOLLOW-UP</span><em>MOVED BY</em><span class="w" style="color:var(--c4)">Salesperson</span></div>
+
+  <div class="z" style="background:var(--grey)"><span>HOLD</span><span class="c">NOT A STAGE &mdash; THE JOB KEEPS ITS NUMBER</span></div>
+  <div class="s hold"><b style="background:var(--grey)">&mdash;</b><span class="n">HOLD / BLOCKED</span><em>SET BY</em><span class="w" style="color:var(--grey)">Ephrata only</span></div>
+
+  <div class="stops">
+    <h4>HARD STOPS &mdash; NON-NEGOTIABLE</h4>
+    <ul>
+      <li>No production starts without 100% final payment confirmed by Betty and logged in the Job File.</li>
+      <li>No delivery without QC release signed by Wede.</li>
+      <li>No assembler payment without the physical Customer Acceptance Form in the Job File.</li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    <span>KLEVER &nbsp;&middot;&nbsp; FORM JF-01 &nbsp;&middot;&nbsp; REV 2 &nbsp;&middot;&nbsp; EFFECTIVE 19 SEPTEMBER 2026</span>
+    <span>MIRRORS FORM JC-01 REV 2</span>
+    <span>PAGE 1 OF 1</span>
+  </div>
+
+</body>
+</html>
