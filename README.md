@@ -9,6 +9,11 @@ sheet), print. Colour runs down the **left edge for the salesperson** and the
 **right edge for the designer**, so a card says whose job it is without being
 read. New designers can be added on the page.
 
+On A6 the **four cards are set up one at a time** — a sheet of four is four
+jobs, not one job's stack. Choose the card in the rail, or click it on the
+sheet, then set its two names. **Same on all 4** copies one card across when
+the sheet really is one person's stack.
+
 Print at **100% / actual size**. On A6, cut once across and once down.
 
 ## What is here
@@ -18,6 +23,7 @@ Print at **100% / actual size**. On A6, cut once across and once down.
 | `index.html` | the page above — the job card, printed to order |
 | `print/Klever_Job_Card.*` | Form JC-01, the signing card, A4 |
 | `print/Klever_Job_Card_Small.*` | Form JC-01S, the same card at A6, four to a sheet |
+| | `?s=` and `?d=` take one name, or four comma-separated — one per card |
 | `print/Klever_Job_Card_{Bruktawit,Tsega}.pdf` | JC-01 in each salesperson's colour |
 | `print/Klever_Job_Flow_Card.*` | Form JF-01, the reading copy: who signs, in what order |
 | `print/Klever_Job_Board_Cabinet.html` | the board cabinet |
