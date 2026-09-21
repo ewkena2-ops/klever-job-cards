@@ -6,7 +6,9 @@
 <style>
   /* ════════════════════════════════════════════════════════════════
      FORM JC-01S  —  the A6 short form of the A4 Job Card (JC-01).
-     One A4 sheet holds four identical cards; cut on the grey cross.
+     One A4 sheet holds four cards; each one can carry its own
+     salesperson and designer, so one sheet can serve four jobs.
+     Cut on the grey cross.
      Stages and owners are quoted verbatim from JC-01 REV 2 — the
      stage data lives in the STAGES array at the foot of this file.
      ════════════════════════════════════════════════════════════════ */
@@ -184,7 +186,7 @@
   /* ── on-screen picker: choose the two people, then print. Never printed. ── */
   @media screen{
     html{ background:#ececec; }
-    body{ padding:26mm 0 10mm; display:flex; justify-content:center; }
+    body{ padding:42mm 0 10mm; display:flex; justify-content:center; }
     .sheet{ box-shadow:0 1mm 4mm rgba(0,0,0,.18); }
     .bar{
       position:fixed; top:0; left:0; right:0; z-index:9;
@@ -194,6 +196,15 @@
     }
     .bar b{ font-weight:800; letter-spacing:.18em; }
     .bar select{ font:inherit; padding:2px 6px; }
+    .bar .grp{
+      display:flex; align-items:center; gap:1.6mm;
+      background:#3a3a3a; padding:1.4mm 2.2mm; border-radius:1mm;
+    }
+    .bar .grp b{ font-size:11px; letter-spacing:.12em; opacity:.7; }
+    .bar button{
+      font:inherit; letter-spacing:.1em; font-weight:700; cursor:pointer;
+      padding:2px 8px; border:0; border-radius:1mm; background:#c9c9c9; color:#2b2b2b;
+    }
     .bar .key{ display:flex; flex-wrap:wrap; gap:3mm; opacity:.9; }
     .bar .key span{ display:flex; align-items:center; gap:4px; }
     .bar .key i{ width:11px; height:11px; border-radius:2px; display:block; }
@@ -339,46 +350,60 @@ var SALES = {
   tsega:     { name: "TSEGA",     color: "var(--s2)" }
 };
 
-/* ?s=bruktawit or ?s=tsega fills the sheet with one salesperson's cards;
-   ?s=mix prints two of each; no query at all prints the plain card. */
+/* ?s= and ?d= each take either one name, which fills the whole sheet, or a
+   comma list of four — one per card, reading left to right, top row first —
+   so a single A4 can carry four different salesperson/designer pairs.
+   ?s=mix stays as the old shorthand for two Bruktawit and two Tsega. An
+   empty slot (a bare comma) leaves that one card plain. No query at all
+   prints four plain cards, exactly as before. */
 function param(k){
   var v = (location.search.match(new RegExp("[?&]" + k + "=([^&]+)")) || [])[1];
   return v ? decodeURIComponent(v).toLowerCase() : "";
 }
 
-function designer(){
-  var q = param("d");
-  return DESIGNERS.filter(function(d){ return d.key === q; })[0] || null;
+/* one name spreads across all four slots; four names are taken as given */
+function spread(q){
+  if (!q) return ["", "", "", ""];
+  var p = q.split(",").map(function(x){ return x.trim(); });
+  if (p.length === 1) p = [p[0], p[0], p[0], p[0]];
+  while (p.length < 4) p.push("");
+  return p.slice(0, 4);
 }
 
-function plan(){
-  var q = param("s");
-  if (q === "mix") return [SALES.bruktawit, SALES.bruktawit, SALES.tsega, SALES.tsega];
-  var who = SALES[q];
-  return [who, who, who, who];
+function findSales(k){ return SALES[k] || null; }
+function findDesigner(k){
+  return DESIGNERS.filter(function(d){ return d.key === k; })[0] || null;
 }
+
+function salesQuery(){
+  var q = param("s");
+  return q === "mix" ? "bruktawit,bruktawit,tsega,tsega" : q;
+}
+
+function plan(){      return spread(salesQuery()).map(findSales);    }
+function designers(){ return spread(param("d")).map(findDesigner); }
 
 (function(){
   var tpl = document.getElementById("card");
   var sheet = document.getElementById("sheet");
   var track = trackHTML();
   var whose = plan();
-  var des = designer();
-  var card0;
+  var desg  = designers();
   for (var i = 0; i < 4; i++){
     var tile = document.createElement("div");
     tile.className = "tile";
     tile.appendChild(tpl.content.cloneNode(true));
     tile.querySelector(".track").innerHTML = track;
+    var card = tile.querySelector(".card");
+
+    var des = desg[i];
     tile.querySelector(".pick").insertAdjacentHTML("beforeend", pickHTML(des));
     if (des){
-      card0 = tile.querySelector(".card");
-      card0.classList.add("desg");
-      card0.style.setProperty("--desg", des.color);
+      card.classList.add("desg");
+      card.style.setProperty("--desg", des.color);
     }
     var who = whose[i];
     if (who){
-      var card = tile.querySelector(".card");
       card.classList.add("sales");
       card.style.setProperty("--sales", who.color);
       /* the pill needs the room the second half of the tagline was using,
@@ -394,7 +419,9 @@ function plan(){
 
 
 <script>
-/* The picker is a screen-only convenience — it just rewrites ?s= and ?d=. */
+/* The picker is a screen-only convenience — it just rewrites ?s= and ?d=.
+   One group per card, so a sheet can be set up as four different jobs;
+   SAME ON ALL 4 copies card 1 down the sheet when they are one job's stack. */
 (function(){
   var bar = document.getElementById("bar");
   if (!bar) return;
@@ -402,8 +429,6 @@ function plan(){
   var sales = Object.keys(SALES).map(function(k){
     return { key:k, name:SALES[k].name, color:SALES[k].color };
   });
-  var salesOpts = sales.slice();
-  salesOpts.push({ key:"mix", name:"TWO OF EACH" });
 
   function options(list, current){
     return '<option value="">&mdash; none &mdash;</option>' + list.map(function(o){
@@ -417,21 +442,49 @@ function plan(){
     }).join("");
   }
 
+  var curS = spread(salesQuery());
+  var curD = spread(param("d"));
+
   bar.innerHTML =
     '<b>PRINT SET-UP</b>' +
-    '<label>Salesperson <select id="selS">' + options(salesOpts, param("s")) + '</select></label>' +
-    '<label>Designer <select id="selD">' + options(DESIGNERS, param("d")) + '</select></label>' +
+    [0,1,2,3].map(function(i){
+      return '<span class="grp"><b>CARD ' + (i + 1) + '</b>' +
+        '<select data-k="s" data-i="' + i + '">' + options(sales, curS[i]) + '</select>' +
+        '<select data-k="d" data-i="' + i + '">' + options(DESIGNERS, curD[i]) + '</select>' +
+      '</span>';
+    }).join("") +
+    '<button type="button" id="allSame">SAME ON ALL 4</button>' +
     '<span class="key">' + chips(sales) + chips(DESIGNERS) + '</span>';
 
+  function picked(k){
+    return [0,1,2,3].map(function(i){
+      return bar.querySelector('select[data-k="' + k + '"][data-i="' + i + '"]').value;
+    });
+  }
+  /* four of the same name collapse back to the short ?s=tsega form, so the
+     one-job sheet keeps the URL it has always had */
+  function collapse(a){
+    var same = a.every(function(x){ return x === a[0]; });
+    return same ? a[0] : a.join(",");
+  }
   function go(){
     var q = [];
-    var s = document.getElementById("selS").value;
-    var d = document.getElementById("selD").value;
+    var s = collapse(picked("s"));
+    var d = collapse(picked("d"));
     if (s) q.push("s=" + s);
     if (d) q.push("d=" + d);
     location.search = q.length ? "?" + q.join("&") : "?";
   }
+
   bar.addEventListener("change", go);
+  document.getElementById("allSame").addEventListener("click", function(){
+    var s = picked("s")[0], d = picked("d")[0];
+    [1,2,3].forEach(function(i){
+      bar.querySelector('select[data-k="s"][data-i="' + i + '"]').value = s;
+      bar.querySelector('select[data-k="d"][data-i="' + i + '"]').value = d;
+    });
+    go();
+  });
 })();
 </script>
 
