@@ -20,11 +20,12 @@
     --s2: #17867e;   /* Tsega      — salesperson colour      */
     --t1: #b9a3e6;   /* Bruktawit  — tint, for the dark head */
     --t2: #5fd0c4;   /* Tsega      — tint, for the dark head */
-    --d1: #d99a2b;   /* Yonus            — designer colour  */
-    --d2: #c2418c;   /* Tekelawold       — designer colour  */
-    --d3: #24457e;   /* Yohannes         — designer colour  */
-    --d4: #7a9a1f;   /* Abrham Webeshet  — designer colour  */
-    --d5: #8a4b25;   /* Abrham Gossaye   — designer colour  */
+    --d1: #d99a2b;   /* Yonas Abate        — designer colour  */
+    --d2: #c2418c;   /* Teklewold Birhanu  — designer colour  */
+    --d3: #24457e;   /* Yohannes Amare     — designer colour  */
+    --d4: #7a9a1f;   /* Abrham Wubishet    — designer colour  */
+    --d5: #8a4b25;   /* Abrham Gossaye     — designer colour  */
+    --d6: #7b1e3c;   /* Ermiyas            — designer colour  */
   }
 
   *{ box-sizing:border-box; margin:0; padding:0; }
@@ -115,8 +116,9 @@
   .tick span{ font-size:7.6pt; font-weight:700; letter-spacing:.045em; }
   .tick u{ flex:1; border-bottom:.6pt solid var(--rule); height:3.2mm; text-decoration:none; margin-left:1mm; }
 
-  /* designer picker — tick one; the list must match the small card's DESIGNERS */
-  .pick{ display:flex; align-items:center; gap:3mm; margin:1.6mm 0 1.6mm; }
+  /* designer picker — tick one; the list must match the small card's DESIGNERS.
+     The 1.8mm gap is what lets six names fit the 192mm row at full size. */
+  .pick{ display:flex; align-items:center; gap:1.8mm; margin:1.6mm 0 1.6mm; }
   .pick > b{
     font-size:6.2pt; letter-spacing:.19em; font-weight:700;
     color:var(--label); white-space:nowrap;
@@ -246,11 +248,12 @@
 
   <div class="pick">
     <b>DESIGNER &mdash; TICK ONE</b>
-    <div class="tick" data-d="yonus"><i></i><span>YONUS</span></div>
-    <div class="tick" data-d="tekelawold"><i></i><span>TEKELAWOLD</span></div>
+    <div class="tick" data-d="yonas"><i></i><span>YONAS</span></div>
+    <div class="tick" data-d="teklewold"><i></i><span>TEKLEWOLD</span></div>
     <div class="tick" data-d="yohannes"><i></i><span>YOHANNES</span></div>
-    <div class="tick" data-d="abrhamw"><i></i><span>ABRHAM WEBESHET</span></div>
+    <div class="tick" data-d="abrhamw"><i></i><span>ABRHAM WUBISHET</span></div>
     <div class="tick" data-d="abrhamg"><i></i><span>ABRHAM GOSSAYE</span></div>
+    <div class="tick" data-d="ermiyas"><i></i><span>ERMIYAS</span></div>
   </div>
 
   <div class="sec" style="margin:1mm 0 0">
@@ -341,22 +344,26 @@ var SALES = {
 
 /* Designers, in the order they are printed on the card. */
 var DESIGNERS = [
-  { key: "yonus",      name: "YONUS",           color: "var(--d1)" },
-  { key: "tekelawold", name: "TEKELAWOLD",      color: "var(--d2)" },
+  { key: "yonas",      name: "YONAS",           color: "var(--d1)" },
+  { key: "teklewold",  name: "TEKLEWOLD",       color: "var(--d2)" },
   { key: "yohannes",   name: "YOHANNES",        color: "var(--d3)" },
-  { key: "abrhamw",    name: "ABRHAM WEBESHET", color: "var(--d4)" },
-  { key: "abrhamg",    name: "ABRHAM GOSSAYE",  color: "var(--d5)" }
+  { key: "abrhamw",    name: "ABRHAM WUBISHET", color: "var(--d4)" },
+  { key: "abrhamg",    name: "ABRHAM GOSSAYE",  color: "var(--d5)" },
+  { key: "ermiyas",    name: "ERMIYAS",         color: "var(--d6)" }
 ];
+/* keys from before the spellings were corrected, so old ?d= links still work */
+var RENAMED = { yonus: "yonas", tekelawold: "teklewold" };
 
 function param(k){
   var v = (location.search.match(new RegExp("[?&]" + k + "=([^&]+)")) || [])[1];
   return v ? decodeURIComponent(v).toLowerCase() : "";
 }
+function designerKey(){ var k = param("d"); return RENAMED[k] || k; }
 
-/* ?d=yonus paints the designer's colour on the head's right edge and fills
+/* ?d=yonas paints the designer's colour on the head's right edge and fills
    that designer's tick. */
 (function(){
-  var des = DESIGNERS.filter(function(d){ return d.key === param("d"); })[0];
+  var des = DESIGNERS.filter(function(d){ return d.key === designerKey(); })[0];
   if (!des) return;
   document.body.classList.add("desg");
   document.body.style.setProperty("--desg", des.color);
@@ -418,7 +425,7 @@ function param(k){
   bar.innerHTML =
     '<b>PRINT SET-UP</b>' +
     '<label>Salesperson <select id="selS">' + options(salesOpts, param("s")) + '</select></label>' +
-    '<label>Designer <select id="selD">' + options(DESIGNERS, param("d")) + '</select></label>' +
+    '<label>Designer <select id="selD">' + options(DESIGNERS, designerKey()) + '</select></label>' +
     '<span class="key">' + chips(sales) + chips(DESIGNERS) + '</span>';
 
   function go(){
