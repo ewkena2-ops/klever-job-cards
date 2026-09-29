@@ -27,11 +27,12 @@
     --c4: #e0475f;   /* delivery & after-sales*/
     --s1: #6d4fa2;   /* Bruktawit  — salesperson colour */
     --s2: #17867e;   /* Tsega      — salesperson colour */
-    --d1: #d99a2b;   /* Yonus            — designer colour */
-    --d2: #c2418c;   /* Tekelawold       — designer colour */
-    --d3: #24457e;   /* Yohannes         — designer colour */
-    --d4: #7a9a1f;   /* Abrham Webeshet  — designer colour */
-    --d5: #8a4b25;   /* Abrham Gossaye   — designer colour */
+    --d1: #d99a2b;   /* Yonas Abate        — designer colour */
+    --d2: #c2418c;   /* Teklewold Birhanu  — designer colour */
+    --d3: #24457e;   /* Yohannes Amare     — designer colour */
+    --d4: #7a9a1f;   /* Abrham Wubishet    — designer colour */
+    --d5: #8a4b25;   /* Abrham Gossaye     — designer colour */
+    --d6: #7b1e3c;   /* Ermiyas            — designer colour */
   }
 
   *{ box-sizing:border-box; margin:0; padding:0; }
@@ -105,8 +106,9 @@
   }
   .f .line{ height:3.4mm; border-bottom:.5pt solid var(--rule); }
 
-  /* designer picker — tick one; the list must match the A4 card's */
-  .pick{ display:flex; align-items:center; gap:3mm; padding:0 0 1.3mm; }
+  /* designer picker — tick one; the list must match the A4 card's.
+     The 2.2mm gap keeps six names clear of both colour edges. */
+  .pick{ display:flex; align-items:center; gap:2.2mm; padding:0 0 1.3mm; }
   .pick > b{
     font-size:4.1pt; letter-spacing:.15em; font-weight:700;
     color:var(--label); white-space:nowrap;
@@ -327,14 +329,18 @@ function trackHTML(){
 /* Designers, as on the A4 card. Stages 3 and 4 still read "Designer" verbatim;
    the tick says which one. */
 /* surnames are cut to an initial here only — an A6 row has no space for
-   ABRHAM WEBESHET and ABRHAM GOSSAYE in full. The A4 card prints them whole. */
+   ABRHAM WUBISHET and ABRHAM GOSSAYE in full. The A4 card prints them whole. */
 var DESIGNERS = [
-  { key: "yonus",      name: "YONUS",      color: "var(--d1)" },
-  { key: "tekelawold", name: "TEKELAWOLD", color: "var(--d2)" },
+  { key: "yonas",      name: "YONAS",      color: "var(--d1)" },
+  { key: "teklewold",  name: "TEKLEWOLD",  color: "var(--d2)" },
   { key: "yohannes",   name: "YOHANNES",   color: "var(--d3)" },
   { key: "abrhamw",    name: "ABRHAM W.",  color: "var(--d4)" },
-  { key: "abrhamg",    name: "ABRHAM G.",  color: "var(--d5)" }
+  { key: "abrhamg",    name: "ABRHAM G.",  color: "var(--d5)" },
+  { key: "ermiyas",    name: "ERMIYAS",    color: "var(--d6)" }
 ];
+/* keys from before the spellings were corrected, so old ?d= links still work */
+var RENAMED = { yonus: "yonas", tekelawold: "teklewold" };
+function renamed(k){ return RENAMED[k] || k; }
 
 function pickHTML(chosen){
   return DESIGNERS.map(function(d){
@@ -381,7 +387,7 @@ function salesQuery(){
 }
 
 function plan(){      return spread(salesQuery()).map(findSales);    }
-function designers(){ return spread(param("d")).map(findDesigner); }
+function designers(){ return spread(param("d")).map(renamed).map(findDesigner); }
 
 (function(){
   var tpl = document.getElementById("card");
@@ -443,7 +449,7 @@ function designers(){ return spread(param("d")).map(findDesigner); }
   }
 
   var curS = spread(salesQuery());
-  var curD = spread(param("d"));
+  var curD = spread(param("d")).map(renamed);
 
   bar.innerHTML =
     '<b>PRINT SET-UP</b>' +
